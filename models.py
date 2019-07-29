@@ -1,4 +1,7 @@
 import torch.nn as nn
+from torchsummary import summary
+
+from config import device
 
 
 class BidirectionalLSTM(nn.Module):
@@ -77,3 +80,8 @@ class CRNN(nn.Module):
         output = self.rnn(conv)
 
         return output
+
+
+if __name__ == "__main__":
+    model = CRNN().to(device)
+    summary(model, (3, 512, 512))
