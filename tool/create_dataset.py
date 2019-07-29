@@ -37,7 +37,7 @@ def createDataset(outputPath, imagePathList, labelList, lexiconList=None, checkV
     env = lmdb.open(outputPath, map_size=1099511627776)
     cache = {}
     cnt = 1
-    for i in xrange(nSamples):
+    for i in range(nSamples):
         imagePath = imagePathList[i]
         label = labelList[i]
         if not os.path.exists(imagePath):
