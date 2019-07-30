@@ -6,7 +6,6 @@ from tensorboardX import SummaryWriter
 from torch import nn
 from torch.autograd import Variable
 from tqdm import tqdm
-from warpctc_pytorch import CTCLoss
 
 from config import device, grad_clip, print_freq, num_workers
 from data_gen import MJSynthDataset
@@ -49,7 +48,7 @@ def train_net(args):
     model = model.to(device)
 
     # Loss function
-    criterion = CTCLoss()
+    criterion = nn.CTCLoss()
 
     # Custom dataloaders
     train_dataset = MJSynthDataset('train')
