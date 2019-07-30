@@ -21,7 +21,6 @@ data_transforms = {
 }
 
 
-
 class MJSynthDataset(Dataset):
 
     def __init__(self, split):
@@ -41,7 +40,7 @@ class MJSynthDataset(Dataset):
         while True:
             try:
                 return self.get_data_record(idx)
-            except TypeError:
+            except cv.error:
                 import random
                 idx = random.randint(0, len(self.lines) - 1)
 
