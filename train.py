@@ -107,8 +107,8 @@ def train(train_loader, model, criterion, optimizer, epoch, logger):
         length = torch.LongTensor([len(t) for t in text])
         print('length: ' + str(length))
         text = [utils.encode_text(t) for t in text]
-        text = torch.LongTensor(text)
         print('text: ' + str(text))
+        text = torch.LongTensor(text)
 
         print('text.size(): ' + str(text.size()))
         print('length.size(): ' + str(length.size()))
