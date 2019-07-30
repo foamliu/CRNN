@@ -7,9 +7,9 @@ from torch import nn
 from torch.autograd import Variable
 from tqdm import tqdm
 
+import data_gen
 import utils
-from config import device, grad_clip, print_freq, num_workers, imgH, nc, nclass, nh, alphabet
-from data_gen import MJSynthDataset
+from config import device, grad_clip, print_freq, num_workers, imgH, nc, nclass, nh, alphabet, imgW, keep_ratio
 from models import CRNN
 
 converter = utils.strLabelConverter(alphabet)
@@ -53,10 +53,13 @@ def train_net(args):
     criterion = nn.CTCLoss()
 
     # Custom dataloaders
-    train_dataset = MJSynthDataset('train')
-    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True,
-                                               num_workers=num_workers)
-    valid_dataset = MJSynthDataset('val')
+    train_dataset = data_gen.MJSynthDataset('train')
+    sampler = data_gen.randomSequentialSampler(train_dataset, args.batch_size)
+    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True, sampler=sampler,
+                                               num_workers=num_workers,
+                                               collate_fn=data_gen.alignCollate(imgH=imgH, imgW=imgW,
+                                                                                keep_ratio=keep_ratio))
+    valid_dataset = data_gen.MJSynthDataset('val')
     valid_loader = torch.utils.data.DataLoader(valid_dataset, batch_size=args.batch_size, shuffle=False,
                                                num_workers=num_workers)
 
