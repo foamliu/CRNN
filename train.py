@@ -113,6 +113,9 @@ def train(train_loader, model, criterion, optimizer, epoch, logger):
         text = torch.IntTensor(batch_size * 5)
         length = torch.IntTensor(batch_size)
 
+        text = Variable(text)
+        length = Variable(length)
+
         utils.loadData(text, t)
         utils.loadData(length, l)
 
