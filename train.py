@@ -50,7 +50,7 @@ def train_net(args):
     model = model.to(device)
 
     # Loss function
-    criterion = nn.CTCLoss().to(device)
+    criterion = nn.CTCLoss()
 
     # Custom dataloaders
     train_dataset = data_gen.MJSynthDataset('train')
@@ -106,8 +106,6 @@ def train(train_loader, model, criterion, optimizer, epoch, logger):
         image = image.to(device)
         # print('text: ' + str(text))
         text, length = converter.encode(text)
-        text = text.to(device)
-        length = length.to(device)
         batch_size = image.size(0)
 
         # print('text.size(): ' + str(text.size()))
