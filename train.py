@@ -52,11 +52,11 @@ def train_net(args):
 
     # Custom dataloaders
     train_dataset = MJSynthDataset('train')
-    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=args.batch_size,
-                                               shuffle=True, num_workers=num_workers)
-    valid_dataset = MJSynthDataset('test')
-    valid_loader = torch.utils.data.DataLoader(valid_dataset, batch_size=args.batch_size,
-                                               shuffle=False, num_workers=num_workers)
+    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True,
+                                               num_workers=num_workers)
+    valid_dataset = MJSynthDataset('val')
+    valid_loader = torch.utils.data.DataLoader(valid_dataset, batch_size=args.batch_size, shuffle=False,
+                                               num_workers=num_workers)
 
     # Epochs
     for epoch in range(start_epoch, args.end_epoch):
