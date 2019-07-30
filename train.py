@@ -99,11 +99,13 @@ def train(train_loader, model, criterion, optimizer, epoch, logger):
     losses = utils.AverageMeter()
 
     # Batches
-    for i, (image, text, length) in enumerate(train_loader):
+    for i, (image, text) in enumerate(train_loader):
         # Move to GPU, if available
         image = image.to(device)
         batch_size = image.size(0)
 
+        length = torch.LongTensor([len(t) for t in text])
+        text = torch.LongTensor([utils.encode_text(t) for t in text])
         print('text.size(): ' + str(text.size()))
         print('length.size(): ' + str(length.size()))
         # print('text: ' + str(text))

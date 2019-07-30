@@ -6,6 +6,8 @@ import os
 import cv2 as cv
 import torch
 
+from config import alphabet, max_len
+
 
 def clip_gradient(optimizer, grad_clip):
     """
@@ -199,3 +201,13 @@ class strLabelConverter(object):
 
 def loadData(v, data):
     v.data.resize_(data.size()).copy_(data)
+
+
+dict = {}
+for i, char in enumerate(alphabet):
+    # NOTE: 0 is reserved for 'blank' required by wrap_ctc
+    dict[char] = i + 1
+
+
+def encode_text(t):
+    return [dict[c] for c in t] + [0] * (max_len - len(t))
