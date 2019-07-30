@@ -147,7 +147,8 @@ def train(train_loader, model, criterion, optimizer, epoch, logger):
         if i % print_freq == 0:
             logger.info('Epoch: [{0}][{1}/{2}]\t'
                         'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
-                        'Loss {acc.val:.4f} ({acc.avg:.4f})'.format(epoch, i, len(train_loader), loss=losses, acc=accs))
+                        'Accuracy {acc.val:.4f} ({acc.avg:.4f})'.format(epoch, i, len(train_loader), loss=losses,
+                                                                        acc=accs))
 
     return losses.avg
 
@@ -156,16 +157,19 @@ def valid(valid_loader, model, criterion, logger):
     model.eval()  # train mode (dropout and batchnorm is used)
 
     losses = utils.AverageMeter()
+    accs = utils.AverageMeter()
+
+    converter = utils.strLabelConverter(alphabet=alphabet)
 
     # Batches
-    for image, text, length in tqdm(valid_loader):
+    for image, cpu_texts in tqdm(valid_loader):
         # Move to GPU, if available
         image = image.to(device)
         batch_size = image.size(0)
 
-        length = [min(max_len, len(t)) for t in text]
+        length = [min(max_len, len(t)) for t in cpu_texts]
         length = torch.LongTensor(length)
-        text = [utils.encode_text(t[:max_len]) for t in text]
+        text = [utils.encode_text(t[:max_len]) for t in cpu_texts]
         text = torch.LongTensor(text).to(device)
 
         # Forward prop.
@@ -174,12 +178,15 @@ def valid(valid_loader, model, criterion, logger):
 
         # Calculate loss
         loss = criterion(preds, text, preds_size, length)
+        acc = utils.accuracy(preds, preds_size, cpu_texts, converter, batch_size)
 
         # Keep track of metrics
         losses.update(loss.item(), batch_size)
+        accs.update(acc, batch_size)
 
     # Print status
-    logger.info('TEST Loss {loss.val:.4f} ({loss.avg:.4f})\n'.format(loss=losses))
+    logger.info('TEST Loss {loss.val:.4f} ({loss.avg:.4f})\t'
+                'Accuracy {acc.val:.4f} ({acc.avg:.4f})\n'.format(loss=losses, acc=accs))
 
     return losses.avg
 
