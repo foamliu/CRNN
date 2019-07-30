@@ -105,22 +105,22 @@ def train(train_loader, model, criterion, optimizer, epoch, logger):
         batch_size = image.size(0)
 
         length = torch.LongTensor([len(t) for t in text])
-        print('length: ' + str(length))
+        # print('length: ' + str(length))
         text = [utils.encode_text(t) for t in text]
-        print('text: ' + str(text))
-        text = torch.LongTensor(text)
+        # print('text: ' + str(text))
+        text = torch.LongTensor(text).to(device)
 
-        print('text.size(): ' + str(text.size()))
-        print('length.size(): ' + str(length.size()))
+        # print('text.size(): ' + str(text.size()))
+        # print('length.size(): ' + str(length.size()))
 
         # print('length: ' + str(length))
 
         # Forward prop.
         preds = model(image)
-        print('batch_size: ' + str(batch_size))
+        # print('batch_size: ' + str(batch_size))
         preds_size = Variable(torch.IntTensor([preds.size(0)] * batch_size))
-        print('preds_size: ' + str(preds_size))
-        print('preds_size.size(): ' + str(preds_size.size()))
+        # print('preds_size: ' + str(preds_size))
+        # print('preds_size.size(): ' + str(preds_size.size()))
 
         # Calculate loss
         loss = criterion(preds, text, preds_size, length)
