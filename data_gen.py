@@ -29,8 +29,10 @@ class MJSynthDataset(Dataset):
         img = cv.resize(img, (imgW, imgH), cv.INTER_CUBIC)
         img = self.toTensor(img)
         img.sub_(0.5).div_(0.5)
+        print(img)
 
         text = str(img_path.split('_')[1].lower())
+        print(text)
 
         return img, text
 
