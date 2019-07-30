@@ -4,8 +4,8 @@ import cv2 as cv
 import numpy as np
 from torch.utils.data import Dataset
 
-from config import IMG_FOLDER, annotation_files, imgH, imgW, alphabet
 import utils
+from config import IMG_FOLDER, annotation_files, imgH, imgW, alphabet
 
 
 class MJSynthDataset(Dataset):
@@ -33,3 +33,8 @@ class MJSynthDataset(Dataset):
         text, length = self.converter.encode(text)
 
         return img, text, length
+
+
+if __name__ == "__main__":
+    dataset = MJSynthDataset('val')
+    print(dataset[1])
