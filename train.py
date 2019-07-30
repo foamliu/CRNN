@@ -128,9 +128,11 @@ def train(train_loader, model, criterion, optimizer, epoch, logger):
         # print('preds_size.size(): ' + str(preds_size.size()))
 
         # Calculate loss
-        loss = criterion(preds, text, preds_size, length) / batch_size
-        acc = utils.accuracy(preds, preds_size, cpu_texts, converter, batch_size)
+        loss = criterion(preds, text, preds_size, length)
         print(type(loss))
+        loss = loss / batch_size
+        print(type(loss))
+        acc = utils.accuracy(preds, preds_size, cpu_texts, converter, batch_size)
         print(type(batch_size))
 
         # Back prop.
