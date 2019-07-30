@@ -4,10 +4,12 @@ import numpy as np
 import torch
 from tensorboardX import SummaryWriter
 from torch import nn
+from torch.autograd import Variable
+from tqdm import tqdm
 from warpctc_pytorch import CTCLoss
 
-from config import device, imgH, imgW, keep_ratio, grad_clip, print_freq, num_workers
-from data_gen import lmdbDataset, alignCollate
+from config import device, grad_clip, print_freq, num_workers
+from data_gen import MJSynthDataset
 from models import CRNN
 from utils import parse_args, save_checkpoint, AverageMeter, clip_gradient, get_logger, get_learning_rate
 
@@ -49,13 +51,11 @@ def train_net(args):
     # Loss function
     criterion = CTCLoss()
 
-    collate_fn = alignCollate(imgH=imgH, imgW=imgW, keep_ratio=keep_ratio)
-
     # Custom dataloaders
-    train_dataset = lmdbDataset('train')
+    train_dataset = MJSynthDataset('train')
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=args.batch_size,
                                                shuffle=True, num_workers=num_workers)
-    valid_dataset = lmdbDataset('test')
+    valid_dataset = MJSynthDataset('test')
     valid_loader = torch.utils.data.DataLoader(valid_dataset, batch_size=args.batch_size,
                                                shuffle=False, num_workers=num_workers)
 
@@ -100,14 +100,16 @@ def train(train_loader, model, criterion, optimizer, epoch, logger):
     losses = AverageMeter()
 
     # Batches
-    for i, (images, texts) in enumerate(train_loader):
+    for i, (image, text, length) in enumerate(train_loader):
         # Move to GPU, if available
-        images = images.to(device)
-        texts = texts.to(device)
-        batch_size = images.size(0)
+        image = image.to(device)
+        text = text.to(device)
+        length = length.to(device)
+        batch_size = image.size(0)
 
         # Forward prop.
-        preds = model(images)
+        preds = model(image)
+        preds_size = Variable(torch.IntTensor([preds.size(0)] * batch_size))
 
         # Calculate loss
         loss = criterion(preds, text, preds_size, length)
@@ -139,21 +141,22 @@ def valid(valid_loader, model, criterion, logger):
     losses = AverageMeter()
 
     # Batches
-    for img, score_map, geo_map, training_mask in tqdm(valid_loader):
+    for image, text, length in tqdm(valid_loader):
         # Move to GPU, if available
-        img = img.to(device)
-        score_map = score_map.to(device)
-        geo_map = geo_map.to(device)
-        training_mask = training_mask.to(device)
+        image = image.to(device)
+        text = text.to(device)
+        length = length.to(device)
+        batch_size = image.size(0)
 
         # Forward prop.
-        f_score, f_geometry = model(img)
+        preds = model(image)
+        preds_size = Variable(torch.IntTensor([preds.size(0)] * batch_size))
 
         # Calculate loss
-        loss = criterion(score_map, f_score, geo_map, f_geometry, training_mask)
+        loss = criterion(preds, text, preds_size, length)
 
         # Keep track of metrics
-        losses.update(loss.item(), img.size(0))
+        losses.update(loss.item(), batch_size)
 
     # Print status
     logger.info('TEST Loss {loss.val:.4f} ({loss.avg:.4f})\n'.format(loss=losses))

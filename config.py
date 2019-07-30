@@ -6,6 +6,14 @@ imgH = 32
 imgW = 100
 keep_ratio = True
 
+alphabet = '0123456789abcdefghijklmnopqrstuvwxyz'
+
+IMG_FOLDER = 'mnt/ramdisk/max/90kDICT32px/'
+
+annotation_files = {'train': 'mnt/ramdisk/max/90kDICT32px/annotation_train.txt',
+                    'val': 'mnt/ramdisk/max/90kDICT32px/annotation_val.txt',
+                    'test': 'mnt/ramdisk/max/90kDICT32px/annotation_test.txt'}
+
 # Training parameters
 num_workers = 4  # for data-loading
 grad_clip = 5.  # clip gradients at an absolute value of

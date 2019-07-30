@@ -75,7 +75,7 @@ class CRNN(nn.Module):
         assert h == 1, "the height of conv must be 1"
         conv = conv.squeeze(2)
         conv = conv.permute(2, 0, 1)  # [w, b, c]
-
+        #
         # rnn features
         output = self.rnn(conv)
 
