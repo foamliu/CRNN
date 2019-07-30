@@ -105,10 +105,14 @@ def train(train_loader, model, criterion, optimizer, epoch, logger):
         batch_size = image.size(0)
 
         length = torch.LongTensor([len(t) for t in text])
-        text = torch.LongTensor([utils.encode_text(t) for t in text])
+        print('length: ' + str(length))
+        text = [utils.encode_text(t) for t in text]
+        text = torch.LongTensor(text)
+        print('text: ' + str(text))
+
         print('text.size(): ' + str(text.size()))
         print('length.size(): ' + str(length.size()))
-        # print('text: ' + str(text))
+
         # print('length: ' + str(length))
 
         # Forward prop.
