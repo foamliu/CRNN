@@ -48,7 +48,7 @@ def train_net(args):
     model = model.to(device)
 
     # Loss function
-    criterion = nn.CTCLoss(reduction='elementwise_mean')
+    criterion = nn.CTCLoss(reduction='mean')
 
     # Custom dataloaders
     train_dataset = data_gen.MJSynthDataset('train')
