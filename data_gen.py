@@ -4,7 +4,7 @@ import cv2 as cv
 import torchvision.transforms as transforms
 from torch.utils.data import Dataset
 
-from config import IMG_FOLDER, annotation_files, imgH, imgW
+from config import IMG_FOLDER, annotation_files, imgH, imgW, max_len
 
 # Data augmentation and normalization for training
 # Just normalization for validation
@@ -46,6 +46,7 @@ class MJSynthDataset(Dataset):
         img = self.transformer(img)
 
         text = str(img_path.split('_')[1].lower())
+        text = text[:max_len]
 
         return img, text
 
