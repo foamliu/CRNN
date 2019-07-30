@@ -26,7 +26,7 @@ def train_net(args):
 
     # Initialize / load checkpoint
     if checkpoint is None:
-        model = CRNN(args)
+        model = CRNN(32, 1, 37, 256)
         model = nn.DataParallel(model)
 
         if args.optimizer == 'sgd':
