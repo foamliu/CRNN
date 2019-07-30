@@ -33,7 +33,7 @@ class MJSynthDataset(Dataset):
 
         text, length = self.converter.encode(text)
 
-        return img, text, length
+        return img, text[0], length[0]
 
 
 if __name__ == "__main__":
