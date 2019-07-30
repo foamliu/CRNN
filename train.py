@@ -108,13 +108,14 @@ def train(train_loader, model, criterion, optimizer, epoch, logger):
         text, length = converter.encode(text)
         batch_size = image.size(0)
 
-        # print('text.size(): ' + str(text.size()))
+        print('text.size(): ' + str(text.size()))
         print('length.size(): ' + str(length.size()))
         # print('text: ' + str(text))
         # print('length: ' + str(length))
 
         # Forward prop.
         preds = model(image)
+        print('batch_size: ' + str(batch_size))
         preds_size = Variable(torch.IntTensor([preds.size(0)] * batch_size))
         print('preds_size: ' + str(preds_size))
         print('preds_size.size(): ' + str(preds_size.size()))
