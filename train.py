@@ -104,15 +104,10 @@ def train(train_loader, model, criterion, optimizer, epoch, logger):
     for i, (image, text) in enumerate(train_loader):
         # Move to GPU, if available
         image = image.to(device)
-        print(text)
-        print(type(text))
+        text, length = converter.encode(text)
         text = text.to(device)
+        length = length.to(device)
         batch_size = image.size(0)
-
-        utils.loadData(image, image)
-        t, l = converter.encode(text)
-        utils.loadData(text, t)
-        utils.loadData(length, l)
 
         print('text.size(): ' + str(text.size()))
         print('length.size(): ' + str(length.size()))

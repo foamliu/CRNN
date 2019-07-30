@@ -197,3 +197,5 @@ class strLabelConverter(object):
             return texts
 
 
+def loadData(v, data):
+    v.data.resize_(data.size()).copy_(data)
