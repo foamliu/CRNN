@@ -7,10 +7,12 @@ from torch import nn
 from torch.autograd import Variable
 from tqdm import tqdm
 
-from config import device, grad_clip, print_freq, num_workers, imgH, nc, nclass, nh
+import utils
+from config import device, grad_clip, print_freq, num_workers, imgH, nc, nclass, nh, alphabet
 from data_gen import MJSynthDataset
 from models import CRNN
-from utils import parse_args, save_checkpoint, AverageMeter, clip_gradient, get_logger, get_learning_rate
+
+converter = utils.strLabelConverter(alphabet)
 
 
 def train_net(args):
@@ -42,7 +44,7 @@ def train_net(args):
         model = checkpoint['model']
         optimizer = checkpoint['optimizer']
 
-    logger = get_logger()
+    logger = utils.get_logger()
 
     # Move to GPU, if available
     model = model.to(device)
@@ -67,7 +69,7 @@ def train_net(args):
                            optimizer=optimizer,
                            epoch=epoch,
                            logger=logger)
-        effective_lr = get_learning_rate(optimizer)
+        effective_lr = utils.get_learning_rate(optimizer)
         print('\nCurrent effective learning rate: {}\n'.format(effective_lr))
 
         writer.add_scalar('Train_Loss', train_loss, epoch)
@@ -90,21 +92,28 @@ def train_net(args):
             epochs_since_improvement = 0
 
         # Save checkpoint
-        save_checkpoint(epoch, epochs_since_improvement, model, optimizer, best_loss, is_best)
+        utils.save_checkpoint(epoch, epochs_since_improvement, model, optimizer, best_loss, is_best)
 
 
 def train(train_loader, model, criterion, optimizer, epoch, logger):
     model.train()  # train mode (dropout and batchnorm is used)
 
-    losses = AverageMeter()
+    losses = utils.AverageMeter()
 
     # Batches
-    for i, (image, text, length) in enumerate(train_loader):
+    for i, (image, text) in enumerate(train_loader):
         # Move to GPU, if available
         image = image.to(device)
         text = text.to(device)
-        length = length.to(device)
         batch_size = image.size(0)
+
+        utils.loadData(image, image)
+        t, l = converter.encode(text)
+        utils.loadData(text, t)
+        utils.loadData(length, l)
+
+        print('text.size(): ' + str(text.size()))
+        print('length.size(): ' + str(length.size()))
 
         # Forward prop.
         preds = model(image)
@@ -118,7 +127,7 @@ def train(train_loader, model, criterion, optimizer, epoch, logger):
         loss.backward()
 
         # Clip gradients
-        clip_gradient(optimizer, grad_clip)
+        utils.clip_gradient(optimizer, grad_clip)
 
         # Update weights
         optimizer.step()
@@ -137,7 +146,7 @@ def train(train_loader, model, criterion, optimizer, epoch, logger):
 def valid(valid_loader, model, criterion, logger):
     model.eval()  # train mode (dropout and batchnorm is used)
 
-    losses = AverageMeter()
+    losses = utils.AverageMeter()
 
     # Batches
     for image, text, length in tqdm(valid_loader):
@@ -165,7 +174,7 @@ def valid(valid_loader, model, criterion, logger):
 
 def main():
     global args
-    args = parse_args()
+    args = utils.parse_args()
     train_net(args)
 
 

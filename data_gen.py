@@ -1,11 +1,10 @@
 import os
-import torch
+
 import cv2 as cv
-import numpy as np
+import torchvision.transforms as transforms
 from torch.utils.data import Dataset
 
-import utils
-from config import IMG_FOLDER, annotation_files, imgH, imgW, alphabet
+from config import IMG_FOLDER, annotation_files, imgH, imgW
 
 
 class MJSynthDataset(Dataset):
@@ -16,7 +15,7 @@ class MJSynthDataset(Dataset):
         with open(annotation_file, 'r') as file:
             self.lines = file.readlines()
 
-        self.converter = utils.strLabelConverter(alphabet)
+        self.toTensor = transforms.ToTensor()
 
     def __len__(self):
         return self.lines
@@ -27,17 +26,11 @@ class MJSynthDataset(Dataset):
         img_path = os.path.join(IMG_FOLDER, img_path)
         text = str(img_path.split('_')[1].lower())
         img = cv.imread(img_path, 0)
-        img = cv.resize(img, (imgW, imgH))
-        img = np.transpose(img, (1, 0))
-        img = torch.from_numpy(img / 255.)
+        img = cv.resize(img, (imgW, imgH), cv.INTER_CUBIC)
+        img = self.toTensor(img)
+        img.sub_(0.5).div_(0.5)
 
-        text, length = self.converter.encode(text)
-        length = length[0]
-
-        print('text.size(): ' + str(text.size()))
-        print('length.size(): ' + str(length.size()))
-
-        return img, text, length
+        return img, text
 
 
 if __name__ == "__main__":
