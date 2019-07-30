@@ -24,10 +24,20 @@ def train_net(args):
     writer = SummaryWriter()
     epochs_since_improvement = 0
 
+    # custom weights initialization called on crnn
+    def weights_init(m):
+        classname = m.__class__.__name__
+        if classname.find('Conv') != -1:
+            m.weight.data.normal_(0.0, 0.02)
+        elif classname.find('BatchNorm') != -1:
+            m.weight.data.normal_(1.0, 0.02)
+            m.bias.data.fill_(0)
+
     # Initialize / load checkpoint
     if checkpoint is None:
         model = CRNN(imgH, nc, nclass, nh)
-        model = nn.DataParallel(model)
+        model.apply(weights_init)
+        # model = nn.DataParallel(model)
 
         if args.optimizer == 'sgd':
             optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=args.mom,
