@@ -75,10 +75,10 @@ def get_learning_rate(optimizer):
 
 def accuracy(preds, preds_size, cpu_texts, converter, batch_size):
     n_correct = 0
-    print(preds.size())
+    # print(preds.size())
     _, preds = preds.max(2)
-    print(preds.size())
-    preds = preds.squeeze(2)
+    # print(preds.size())
+    # preds = preds.squeeze(2)
     preds = preds.transpose(1, 0).contiguous().view(-1)
     sim_preds = converter.decode(preds.data, preds_size.data, raw=False)
     for pred, target in zip(sim_preds, cpu_texts):
