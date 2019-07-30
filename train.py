@@ -141,7 +141,7 @@ def train(train_loader, model, criterion, optimizer, epoch, logger):
 
         # Keep track of metrics
         losses.update(loss.item(), batch_size)
-        accs.update(acc.item(), batch_size)
+        accs.update(acc, batch_size)
 
         # Print status
         if i % print_freq == 0:
