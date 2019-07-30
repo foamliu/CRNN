@@ -48,7 +48,7 @@ def train_net(args):
     model = model.to(device)
 
     # Loss function
-    criterion = nn.CTCLoss(reduction='mean')
+    criterion = nn.CTCLoss(reduction='None')
 
     # Custom dataloaders
     train_dataset = data_gen.MJSynthDataset('train')
@@ -128,7 +128,7 @@ def train(train_loader, model, criterion, optimizer, epoch, logger):
         # print('preds_size.size(): ' + str(preds_size.size()))
 
         # Calculate loss
-        loss = criterion(preds, text, preds_size, length)
+        loss = criterion(preds, text, preds_size, length) / batch_size
         acc = utils.accuracy(preds, preds_size, cpu_texts, converter, batch_size)
 
         # Back prop.
@@ -179,7 +179,7 @@ def valid(valid_loader, model, criterion, logger):
         preds_size = Variable(torch.IntTensor([preds.size(0)] * batch_size))
 
         # Calculate loss
-        loss = criterion(preds, text, preds_size, length)
+        loss = criterion(preds, text, preds_size, length) / batch_size
         acc = utils.accuracy(preds, preds_size, cpu_texts, converter, batch_size)
 
         # Keep track of metrics
