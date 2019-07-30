@@ -6,6 +6,10 @@ imgH = 32
 imgW = 100
 keep_ratio = True
 
+nc = 1
+nclass = 37
+nh = 256
+
 alphabet = '0123456789abcdefghijklmnopqrstuvwxyz'
 
 IMG_FOLDER = 'mnt/ramdisk/max/90kDICT32px/'

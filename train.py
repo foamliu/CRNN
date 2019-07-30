@@ -7,7 +7,7 @@ from torch import nn
 from torch.autograd import Variable
 from tqdm import tqdm
 
-from config import device, grad_clip, print_freq, num_workers
+from config import device, grad_clip, print_freq, num_workers, imgH, nc, nclass, nh
 from data_gen import MJSynthDataset
 from models import CRNN
 from utils import parse_args, save_checkpoint, AverageMeter, clip_gradient, get_logger, get_learning_rate
@@ -26,7 +26,7 @@ def train_net(args):
 
     # Initialize / load checkpoint
     if checkpoint is None:
-        model = CRNN(32, 1, 37, 256)
+        model = CRNN(imgH, nc, nclass, nh)
         model = nn.DataParallel(model)
 
         if args.optimizer == 'sgd':
