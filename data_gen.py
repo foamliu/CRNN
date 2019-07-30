@@ -38,7 +38,7 @@ class MJSynthDataset(Dataset):
         print('text.size(): ' + str(text.size()))
         print('length.size(): ' + str(length.size()))
 
-        return img, text[0], length[0]
+        return img, text, length
 
 
 if __name__ == "__main__":
