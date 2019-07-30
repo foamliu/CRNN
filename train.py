@@ -129,9 +129,9 @@ def train(train_loader, model, criterion, optimizer, epoch, logger):
 
         # Calculate loss
         loss = criterion(preds, text, preds_size, length)
-        print(type(loss))
+        print(loss.size())
         loss = loss / batch_size
-        print(type(loss))
+        print(loss.size())
         acc = utils.accuracy(preds, preds_size, cpu_texts, converter, batch_size)
         print(type(batch_size))
 
