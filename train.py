@@ -9,10 +9,8 @@ from tqdm import tqdm
 
 import data_gen
 import utils
-from config import device, grad_clip, print_freq, num_workers, imgH, nc, nclass, nh, alphabet
+from config import device, grad_clip, print_freq, num_workers, imgH, nc, nclass, nh
 from models import CRNN
-
-converter = utils.strLabelConverter(alphabet)
 
 
 def train_net(args):
@@ -101,23 +99,10 @@ def train(train_loader, model, criterion, optimizer, epoch, logger):
     losses = utils.AverageMeter()
 
     # Batches
-    for i, (image, text) in enumerate(train_loader):
+    for i, (image, text, length) in enumerate(train_loader):
         # Move to GPU, if available
         image = image.to(device)
-        # print('text: ' + str(text))
-
         batch_size = image.size(0)
-
-        t, l = converter.encode(text)
-
-        text = torch.IntTensor(batch_size * 5)
-        length = torch.IntTensor(batch_size)
-
-        text = Variable(text)
-        length = Variable(length)
-
-        utils.loadData(text, t)
-        utils.loadData(length, l)
 
         print('text.size(): ' + str(text.size()))
         print('length.size(): ' + str(length.size()))

@@ -1,11 +1,10 @@
 import os
 
 import cv2 as cv
-import numpy as np
 import torchvision.transforms as transforms
 from torch.utils.data import Dataset
 
-from config import IMG_FOLDER, annotation_files, imgH, imgW
+from config import IMG_FOLDER, annotation_files, imgH, imgW, alphabet, max_len
 
 # Data augmentation and normalization for training
 # Just normalization for validation
@@ -20,6 +19,8 @@ data_transforms = {
         transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
     ]),
 }
+
+
 class MJSynthDataset(Dataset):
 
     def __init__(self, split):
@@ -30,6 +31,10 @@ class MJSynthDataset(Dataset):
             self.lines = file.readlines()
 
         self.transformer = data_transforms[split]
+        self.dict = {}
+        for i, char in enumerate(alphabet):
+            # NOTE: 0 is reserved for 'blank' required by wrap_ctc
+            self.dict[char] = i + 1
 
     def __len__(self):
         return len(self.lines)
@@ -45,8 +50,13 @@ class MJSynthDataset(Dataset):
         img = self.transformer(img)
 
         text = str(img_path.split('_')[1].lower())
+        length = len(text)
+        text = self.encode_text(text)
 
-        return img, text
+        return img, text, length
+
+    def encode_text(self, t):
+        return [self.dict[c] for c in t] + [0] * (max_len - len(t))
 
 
 if __name__ == "__main__":
