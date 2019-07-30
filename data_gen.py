@@ -30,7 +30,7 @@ class MJSynthDataset(Dataset):
         img = self.toTensor(img)
         img.sub_(0.5).div_(0.5)
 
-        return img, text
+        return img#, text
 
 
 if __name__ == "__main__":
