@@ -48,7 +48,7 @@ def train_net(args):
     model = model.to(device)
 
     # Loss function
-    criterion = nn.CTCLoss(reduction='none')
+    criterion = nn.CTCLoss(reduction='sum')
 
     # Custom dataloaders
     train_dataset = data_gen.MJSynthDataset('train')
@@ -111,29 +111,17 @@ def train(train_loader, model, criterion, optimizer, epoch, logger):
 
         length = [min(max_len, len(t)) for t in cpu_texts]
         length = torch.LongTensor(length)
-        # print('length: ' + str(length))
-        text = [utils.encode_text(t[:max_len]) for t in cpu_texts]
-        # print('text: ' + str(text))
-        text = torch.LongTensor(text).to(device)
 
-        # print('text.size(): ' + str(text.size()))
-        # print('length.size(): ' + str(length.size()))
-        # print('length: ' + str(length))
+        text = [utils.encode_text(t[:max_len]) for t in cpu_texts]
+        text = torch.LongTensor(text).to(device)
 
         # Forward prop.
         preds = model(image)
-        # print('preds.size(): ' + str(preds.size()))
         preds_size = Variable(torch.IntTensor([preds.size(0)] * batch_size))
-        # print('preds_size: ' + str(preds_size))
-        # print('preds_size.size(): ' + str(preds_size.size()))
 
         # Calculate loss
-        loss = criterion(preds, text, preds_size, length)
-        print(loss.size())
-        loss = loss / batch_size
-        print(loss.size())
+        loss = criterion(preds, text, preds_size, length) / batch_size
         acc = utils.accuracy(preds, preds_size, cpu_texts, converter, batch_size)
-        print(type(batch_size))
 
         # Back prop.
         optimizer.zero_grad()
