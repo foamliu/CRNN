@@ -21,6 +21,7 @@ data_transforms = {
 }
 
 
+
 class MJSynthDataset(Dataset):
 
     def __init__(self, split):
@@ -36,6 +37,15 @@ class MJSynthDataset(Dataset):
         return len(self.lines)
 
     def __getitem__(self, i):
+        idx = i
+        while True:
+            try:
+                return self.get_data_record(idx)
+            except TypeError:
+                import random
+                idx = random.randint(0, len(self.lines) - 1)
+
+    def get_data_record(self, i):
         line = self.lines[i]
         img_path = line.split(' ')[0]
         img_path = os.path.join(IMG_FOLDER, img_path)
