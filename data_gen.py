@@ -1,6 +1,7 @@
 import os
 
 import cv2 as cv
+import torch
 import torchvision.transforms as transforms
 from torch.utils.data import Dataset
 
@@ -50,8 +51,8 @@ class MJSynthDataset(Dataset):
         img = self.transformer(img)
 
         text = str(img_path.split('_')[1].lower())
-        length = len(text)
-        text = self.encode_text(text)
+        length = torch.LongTensor(len(text))
+        text = torch.LongTensor(self.encode_text(text))
 
         return img, text, length
 
