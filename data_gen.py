@@ -12,6 +12,7 @@ class MJSynthDataset(Dataset):
     def __init__(self, split):
         annotation_file = annotation_files[split]
 
+        print('loading {} annotation data...'.format(split))
         with open(annotation_file, 'r') as file:
             self.lines = file.readlines()
 
