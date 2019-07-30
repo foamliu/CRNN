@@ -83,5 +83,5 @@ class CRNN(nn.Module):
 
 
 if __name__ == "__main__":
-    model = CRNN(32, 1, 37, 256).to(device)
+    model = CRNN(32, 3, 37, 256).to(device)
     summary(model, (1, 3, 32, 100))
