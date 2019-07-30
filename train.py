@@ -105,8 +105,14 @@ def train(train_loader, model, criterion, optimizer, epoch, logger):
         # Move to GPU, if available
         image = image.to(device)
         # print('text: ' + str(text))
-        text, length = converter.encode(text)
+
         batch_size = image.size(0)
+
+        text = torch.IntTensor(batch_size * 5)
+        length = torch.IntTensor(batch_size)
+        t, l = converter.encode(text)
+        utils.loadData(text, t)
+        utils.loadData(length, l)
 
         print('text.size(): ' + str(text.size()))
         print('length.size(): ' + str(length.size()))
