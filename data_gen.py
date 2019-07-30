@@ -32,7 +32,6 @@ class MJSynthDataset(Dataset):
         img = torch.from_numpy(img / 255.)
 
         text, length = self.converter.encode(text)
-        text = text[0]
         length = length[0]
 
         print('text.size(): ' + str(text.size()))
