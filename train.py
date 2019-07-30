@@ -108,9 +108,11 @@ def train(train_loader, model, criterion, optimizer, epoch, logger):
 
         batch_size = image.size(0)
 
+        t, l = converter.encode(text)
+
         text = torch.IntTensor(batch_size * 5)
         length = torch.IntTensor(batch_size)
-        t, l = converter.encode(text)
+
         utils.loadData(text, t)
         utils.loadData(length, l)
 
