@@ -48,7 +48,7 @@ def train_net(args):
     model = model.to(device)
 
     # Loss function
-    criterion = nn.CTCLoss()
+    criterion = nn.CTCLoss(reduction='sum')
 
     # Custom dataloaders
     train_dataset = data_gen.MJSynthDataset('train')
@@ -155,9 +155,12 @@ def valid(valid_loader, model, criterion, logger):
     for image, text, length in tqdm(valid_loader):
         # Move to GPU, if available
         image = image.to(device)
-        text = text.to(device)
-        length = length.to(device)
         batch_size = image.size(0)
+
+        length = [min(max_len, len(t)) for t in text]
+        length = torch.LongTensor(length)
+        text = [utils.encode_text(t[:max_len]) for t in text]
+        text = torch.LongTensor(text).to(device)
 
         # Forward prop.
         preds = model(image)
