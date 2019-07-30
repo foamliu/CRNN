@@ -97,10 +97,6 @@ def parse_args():
     parser.add_argument('--beta1', type=float, default=0.5, help='image input size.')
     parser.add_argument('--batch-size', type=int, default=2048, help='batch size')
     parser.add_argument('--lr', type=float, default=0.01, help='start learning rate')
-    parser.add_argument('--lr-step', type=int, default=10, help='period of learning rate decay')
-    parser.add_argument('--weight-decay', type=float, default=0.0, help='weight decay')
-    parser.add_argument('--moving-average-decay', type=float, default=0.997, help='moving average decay')
-    parser.add_argument('--mom', type=float, default=0.9, help='momentum')
     parser.add_argument('--end-epoch', type=int, default=1000, help='training epoch size.')
     parser.add_argument('--checkpoint', type=str, default=None, help='checkpoint')
 
