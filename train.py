@@ -111,6 +111,8 @@ def train(train_loader, model, criterion, optimizer, epoch, logger):
 
         print('text.size(): ' + str(text.size()))
         print('length.size(): ' + str(length.size()))
+        print('text: ' + str(text))
+        print('length: ' + str(length))
 
         # Forward prop.
         preds = model(image)
