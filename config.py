@@ -6,7 +6,7 @@ imgH = 32
 imgW = 100
 keep_ratio = True
 
-nc = 1
+nc = 3
 nh = 256
 
 alphabet = '0123456789abcdefghijklmnopqrstuvwxyz'
