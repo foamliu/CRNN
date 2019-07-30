@@ -59,6 +59,8 @@ class resizeNormalize(object):
 class randomSequentialSampler(sampler.Sampler):
 
     def __init__(self, data_source, batch_size):
+        print(type(data_source))
+        print(len(data_source))
         self.num_samples = len(data_source)
         self.batch_size = batch_size
 
