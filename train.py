@@ -9,7 +9,7 @@ from tqdm import tqdm
 
 import data_gen
 import utils
-from config import device, grad_clip, print_freq, num_workers, imgH, nc, nclass, nh, max_len
+from config import device, grad_clip, print_freq, num_workers, imgH, nc, nclass, nh, max_len, alphabet
 from models import CRNN
 
 
@@ -97,17 +97,20 @@ def train(train_loader, model, criterion, optimizer, epoch, logger):
     model.train()  # train mode (dropout and batchnorm is used)
 
     losses = utils.AverageMeter()
+    accs = utils.AverageMeter()
+
+    converter = utils.strLabelConverter(alphabet=alphabet)
 
     # Batches
-    for i, (image, text) in enumerate(train_loader):
+    for i, (image, cpu_texts) in enumerate(train_loader):
         # Move to GPU, if available
         image = image.to(device)
         batch_size = image.size(0)
 
-        length = [min(max_len, len(t)) for t in text]
+        length = [min(max_len, len(t)) for t in cpu_texts]
         length = torch.LongTensor(length)
         # print('length: ' + str(length))
-        text = [utils.encode_text(t[:max_len]) for t in text]
+        text = [utils.encode_text(t[:max_len]) for t in cpu_texts]
         # print('text: ' + str(text))
         text = torch.LongTensor(text).to(device)
 
@@ -124,6 +127,7 @@ def train(train_loader, model, criterion, optimizer, epoch, logger):
 
         # Calculate loss
         loss = criterion(preds, text, preds_size, length)
+        acc = utils.accuracy(preds, preds_size, cpu_texts, converter, batch_size)
 
         # Back prop.
         optimizer.zero_grad()
@@ -137,11 +141,13 @@ def train(train_loader, model, criterion, optimizer, epoch, logger):
 
         # Keep track of metrics
         losses.update(loss.item(), batch_size)
+        accs.update(acc.item(), batch_size)
 
         # Print status
         if i % print_freq == 0:
             logger.info('Epoch: [{0}][{1}/{2}]\t'
-                        'Loss {loss.val:.4f} ({loss.avg:.4f})'.format(epoch, i, len(train_loader), loss=losses))
+                        'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
+                        'Loss {acc.val:.4f} ({acc.avg:.4f})'.format(epoch, i, len(train_loader), loss=losses, acc=accs))
 
     return losses.avg
 

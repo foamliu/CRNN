@@ -6,7 +6,7 @@ import os
 import cv2 as cv
 import torch
 
-from config import alphabet, max_len
+from config import max_len, dict
 
 
 def clip_gradient(optimizer, grad_clip):
@@ -73,12 +73,17 @@ def get_learning_rate(optimizer):
     return optimizer.param_groups[0]['lr']
 
 
-def accuracy(scores, targets, k=1):
-    batch_size = targets.size(0)
-    _, ind = scores.topk(k, 1, True, True)
-    correct = ind.eq(targets.view(-1, 1).expand_as(ind))
-    correct_total = correct.view(-1).float().sum()  # 0D tensor
-    return correct_total.item() * (100.0 / batch_size)
+def accuracy(preds, preds_size, cpu_texts, converter, batch_size):
+    n_correct = 0
+    _, preds = preds.max(2)
+    preds = preds.squeeze(2)
+    preds = preds.transpose(1, 0).contiguous().view(-1)
+    sim_preds = converter.decode(preds.data, preds_size.data, raw=False)
+    for pred, target in zip(sim_preds, cpu_texts):
+        if pred == target.lower():
+            n_correct += 1
+    accuracy = n_correct / float(batch_size)
+    return accuracy
 
 
 def parse_args():
@@ -201,12 +206,6 @@ class strLabelConverter(object):
 
 def loadData(v, data):
     v.data.resize_(data.size()).copy_(data)
-
-
-dict = {}
-for i, char in enumerate(alphabet):
-    # NOTE: 0 is reserved for 'blank' required by wrap_ctc
-    dict[char] = i + 1
 
 
 def encode_text(t):

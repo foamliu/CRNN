@@ -18,6 +18,11 @@ annotation_files = {'train': 'mnt/ramdisk/max/90kDICT32px/annotation_train.txt',
                     'val': 'mnt/ramdisk/max/90kDICT32px/annotation_val.txt',
                     'test': 'mnt/ramdisk/max/90kDICT32px/annotation_test.txt'}
 
+dict = {}
+for i, char in enumerate(alphabet):
+    # NOTE: 0 is reserved for 'blank' required by wrap_ctc
+    dict[char] = i + 1
+
 # Training parameters
 num_workers = 4  # for data-loading
 grad_clip = 5.  # clip gradients at an absolute value of
