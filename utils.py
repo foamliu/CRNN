@@ -89,7 +89,7 @@ def accuracy(preds, preds_size, cpu_texts, converter, batch_size):
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Train EAST network')
+    parser = argparse.ArgumentParser(description='Train CRNN network')
     # general
     parser.add_argument('--network', default='r50', help='specify network')
     parser.add_argument('--pretrained', type=bool, default=True, help='pretrained model')
