@@ -1,5 +1,5 @@
 import os
-
+import torch
 import cv2 as cv
 import numpy as np
 from torch.utils.data import Dataset
@@ -25,10 +25,11 @@ class MJSynthDataset(Dataset):
         line = self.lines[i]
         img_path = line.split(' ')[0]
         img_path = os.path.join(IMG_FOLDER, img_path)
-        text = img_path.split('_')[1].lower()
+        text = str(img_path.split('_')[1].lower())
         img = cv.imread(img_path, 0)
         img = cv.resize(img, (imgW, imgH))
         img = np.transpose(img, (1, 0))
+        img = torch.from_numpy(img / 255.)
 
         text, length = self.converter.encode(text)
 
