@@ -104,6 +104,7 @@ def train(train_loader, model, criterion, optimizer, epoch, logger):
     for i, (image, text) in enumerate(train_loader):
         # Move to GPU, if available
         image = image.to(device)
+        print('text: ' + str(text))
         text, length = converter.encode(text)
         text = text.to(device)
         length = length.to(device)
