@@ -28,7 +28,6 @@ class MJSynthDataset(Dataset):
         img_path = os.path.join(IMG_FOLDER, img_path)
         img = cv.imread(img_path, 0)
         img = cv.resize(img, (imgW, imgH), cv.INTER_CUBIC)
-        img = np.transpose(img, (1, 0))
         img = (img / 255. - 0.5) * 2
 
         text = str(img_path.split('_')[1].lower())
