@@ -9,7 +9,7 @@ from tqdm import tqdm
 
 import data_gen
 import utils
-from config import device, grad_clip, print_freq, num_workers, imgH, nc, nclass, nh
+from config import device, grad_clip, print_freq, num_workers, imgH, nc, nclass, nh, max_len
 from models import CRNN
 
 
@@ -104,15 +104,15 @@ def train(train_loader, model, criterion, optimizer, epoch, logger):
         image = image.to(device)
         batch_size = image.size(0)
 
-        length = torch.LongTensor([len(t) for t in text])
+        length = [min(max_len, len(t)) for t in text]
+        length = torch.LongTensor(length)
         # print('length: ' + str(length))
-        text = [utils.encode_text(t) for t in text]
+        text = [utils.encode_text(t[:max_len]) for t in text]
         # print('text: ' + str(text))
         text = torch.LongTensor(text).to(device)
 
         # print('text.size(): ' + str(text.size()))
         # print('length.size(): ' + str(length.size()))
-
         # print('length: ' + str(length))
 
         # Forward prop.
