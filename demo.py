@@ -5,7 +5,6 @@ import cv2 as cv
 import torch
 from torch.autograd import Variable
 from torchvision import transforms
-from tqdm import tqdm
 
 import utils
 from config import device, imgH, imgW, alphabet, IMG_FOLDER
@@ -28,8 +27,8 @@ if __name__ == "__main__":
 
     for idx in range(len(im_fn_list)):
         im_fn = im_fn_list[idx]
+        print('filename: ' + im_fn)
         im_fn = os.path.join(IMG_FOLDER, im_fn)
-        print(im_fn)
         img = cv.imread(im_fn)
         img = cv.resize(img, (imgW, imgH), cv.INTER_CUBIC)
         img = img[..., ::-1]  # RGB
