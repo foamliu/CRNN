@@ -40,6 +40,7 @@ if __name__ == "__main__":
         img = img.unsqueeze(0)
 
         preds = model(img)
+        print('preds.size():' + str(preds.size()))
 
         converter = utils.strLabelConverter(alphabet)
 
