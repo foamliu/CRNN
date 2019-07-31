@@ -7,7 +7,7 @@ from torch.autograd import Variable
 from torchvision import transforms
 
 import utils
-from config import device, imgH, imgW, alphabet, IMG_FOLDER
+from config import device, imgH, imgW, IMG_FOLDER, converter
 from data_gen import data_transforms
 
 if __name__ == "__main__":
@@ -39,8 +39,6 @@ if __name__ == "__main__":
         img = img.unsqueeze(0)
 
         preds = model(img)
-
-        converter = utils.strLabelConverter(alphabet)
 
         _, preds = preds.max(2)
         preds = preds.transpose(1, 0).contiguous().view(-1)
