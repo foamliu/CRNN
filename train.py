@@ -114,15 +114,15 @@ def train(train_loader, model, criterion, optimizer, epoch, logger):
     converter = utils.strLabelConverter(alphabet=alphabet)
 
     # Batches
-    for i, (image, cpu_texts) in enumerate(train_loader):
+    for i, (image, label) in enumerate(train_loader):
         # Move to GPU, if available
         image = image.to(device)
         batch_size = image.size(0)
 
-        length = [min(max_len, len(t)) for t in cpu_texts]
+        length = [min(max_len, len(t)) for t in label]
         length = torch.LongTensor(length)
 
-        text = [utils.encode_text(t[:max_len]) for t in cpu_texts]
+        text = [utils.encode_text(t[:max_len]) for t in label]
         text = torch.LongTensor(text).to(device)
 
         # Forward prop.
@@ -131,7 +131,7 @@ def train(train_loader, model, criterion, optimizer, epoch, logger):
 
         # Calculate loss
         loss = criterion(preds, text, preds_size, length) / batch_size
-        acc = utils.accuracy(preds, preds_size, cpu_texts, converter, batch_size)
+        acc = utils.accuracy(preds, preds_size, label, converter, batch_size)
 
         # Back prop.
         optimizer.zero_grad()
@@ -166,14 +166,14 @@ def valid(valid_loader, model, criterion, logger):
     converter = utils.strLabelConverter(alphabet=alphabet)
 
     # Batches
-    for image, cpu_texts in tqdm(valid_loader):
+    for image, label in tqdm(valid_loader):
         # Move to GPU, if available
         image = image.to(device)
         batch_size = image.size(0)
 
-        length = [min(max_len, len(t)) for t in cpu_texts]
+        length = [min(max_len, len(t)) for t in label]
         length = torch.LongTensor(length)
-        text = [utils.encode_text(t[:max_len]) for t in cpu_texts]
+        text = [utils.encode_text(t[:max_len]) for t in label]
         text = torch.LongTensor(text).to(device)
 
         # Forward prop.
@@ -182,7 +182,7 @@ def valid(valid_loader, model, criterion, logger):
 
         # Calculate loss
         loss = criterion(preds, text, preds_size, length) / batch_size
-        acc = utils.accuracy(preds, preds_size, cpu_texts, converter, batch_size)
+        acc = utils.accuracy(preds, preds_size, label, converter, batch_size)
 
         # Keep track of metrics
         losses.update(loss.item(), batch_size)
