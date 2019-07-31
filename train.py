@@ -106,10 +106,6 @@ def train_net(args):
 
 
 def train(train_loader, model, criterion, optimizer, epoch, logger):
-    # T = input length
-    # N = batch size
-    # C = number of classes (including blank)
-    # S = max target length
     model.train()  # train mode (dropout and batchnorm is used)
 
     losses = utils.AverageMeter()
@@ -122,14 +118,14 @@ def train(train_loader, model, criterion, optimizer, epoch, logger):
         batch_size = images.size(0)
 
         target_lengths = [min(max_target_len, len(t)) for t in labels]
-        target_lengths = torch.LongTensor(target_lengths)  # size (N)
+        target_lengths = torch.LongTensor(target_lengths)  # size (batch size)
 
         targets = [utils.encode_target(t[:max_target_len]) for t in labels]
-        targets = torch.LongTensor(targets).to(device)  # size (N, S)
+        targets = torch.LongTensor(targets).to(device)  # size (batch size, max target length)
 
         # Forward prop.
-        inputs = model(images)  # size (T, N, C)
-        input_lengths = Variable(torch.IntTensor([inputs.size(0)] * batch_size))  # size (N)
+        inputs = model(images)  # size (input length, batch size, number of classes)
+        input_lengths = Variable(torch.IntTensor([inputs.size(0)] * batch_size))  # size (batch size)
 
         # Calculate loss
         loss = criterion(inputs, targets, input_lengths, target_lengths)
@@ -172,14 +168,14 @@ def valid(valid_loader, model, criterion, logger):
         batch_size = images.size(0)
 
         target_lengths = [min(max_target_len, len(t)) for t in labels]
-        target_lengths = torch.LongTensor(target_lengths)  # size (N)
+        target_lengths = torch.LongTensor(target_lengths)  # size (batch size)
 
         targets = [utils.encode_target(t[:max_target_len]) for t in labels]
-        targets = torch.LongTensor(targets).to(device)  # size (N, S)
+        targets = torch.LongTensor(targets).to(device)  # size (batch size, max target length)
 
         # Forward prop.
-        inputs = model(images)  # size (T, N, C)
-        input_lengths = Variable(torch.IntTensor([inputs.size(0)] * batch_size))  # size (N)
+        inputs = model(images)  # size (input length, batch size, number of classes)
+        input_lengths = Variable(torch.IntTensor([inputs.size(0)] * batch_size))  # size (batch size)
 
         # Calculate loss
         loss = criterion(inputs, targets, input_lengths, target_lengths)
