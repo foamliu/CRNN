@@ -80,6 +80,7 @@ class CRNN(nn.Module):
         #
         # rnn features
         output = self.rnn(conv)
+        output = output.log_softmax(2)
 
         return output
 

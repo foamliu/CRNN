@@ -5,23 +5,23 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # sets de
 imgH = 32
 imgW = 100
 keep_ratio = True
-max_len = 20
+max_target_len = 20
 nc = 3
 nh = 256
 
 alphabet = '0123456789abcdefghijklmnopqrstuvwxyz'
 nclass = len(alphabet) + 1
 
+dict = {}
+for i, char in enumerate(alphabet):
+    # NOTE: 0 is reserved for 'blank' required by wrap_ctc
+    dict[char] = i + 1
+
 IMG_FOLDER = 'mnt/ramdisk/max/90kDICT32px/'
 
 annotation_files = {'train': 'mnt/ramdisk/max/90kDICT32px/annotation_train.txt',
                     'val': 'mnt/ramdisk/max/90kDICT32px/annotation_val.txt',
                     'test': 'mnt/ramdisk/max/90kDICT32px/annotation_test.txt'}
-
-dict = {}
-for i, char in enumerate(alphabet):
-    # NOTE: 0 is reserved for 'blank' required by wrap_ctc
-    dict[char] = i + 1
 
 # Training parameters
 num_workers = 4  # for data-loading

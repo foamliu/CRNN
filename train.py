@@ -9,7 +9,7 @@ from tqdm import tqdm
 
 import data_gen
 import utils
-from config import device, grad_clip, print_freq, num_workers, imgH, nc, nclass, nh, max_len, alphabet
+from config import device, grad_clip, print_freq, num_workers, imgH, nc, nclass, nh, max_target_len, alphabet
 from models import CRNN
 
 
@@ -58,7 +58,7 @@ def train_net(args):
     model = model.to(device)
 
     # Loss function
-    criterion = nn.CTCLoss(reduction='sum').to(device)
+    criterion = nn.CTCLoss(reduction='mean').to(device)
 
     # Custom dataloaders
     train_dataset = data_gen.MJSynthDataset('train')
@@ -106,6 +106,10 @@ def train_net(args):
 
 
 def train(train_loader, model, criterion, optimizer, epoch, logger):
+    # T = input length
+    # N = batch size
+    # C = number of classes (including blank)
+    # S = max target length
     model.train()  # train mode (dropout and batchnorm is used)
 
     losses = utils.AverageMeter()
@@ -114,24 +118,25 @@ def train(train_loader, model, criterion, optimizer, epoch, logger):
     converter = utils.strLabelConverter(alphabet=alphabet)
 
     # Batches
-    for i, (image, label) in enumerate(train_loader):
+    for i, (images, labels) in enumerate(train_loader):
         # Move to GPU, if available
-        image = image.to(device)
-        batch_size = image.size(0)
+        images = images.to(device)
+        batch_size = images.size(0)
 
-        length = [min(max_len, len(t)) for t in label]
-        length = torch.LongTensor(length)
+        target_lengths = [min(max_target_len, len(t)) for t in labels]
+        target_lengths = torch.LongTensor(target_lengths)   # size (N)
 
-        text = [utils.encode_text(t[:max_len]) for t in label]
-        text = torch.LongTensor(text).to(device)
+        targets = [utils.encode_target(t[:max_target_len]) for t in labels]
+        targets = torch.LongTensor(targets).to(device)  # size (N, S)
 
         # Forward prop.
-        preds = model(image)
-        preds_size = Variable(torch.IntTensor([preds.size(0)] * batch_size))
+        inputs = model(images)   # size (T, N, C)
+        print(inputs.size())
+        input_lengths = Variable(torch.IntTensor([inputs.size(0)] * batch_size))    # size (N)
 
         # Calculate loss
-        loss = criterion(preds, text, preds_size, length) / batch_size
-        acc = utils.accuracy(preds, preds_size, label, converter, batch_size)
+        loss = criterion(inputs, targets, input_lengths, target_lengths)
+        acc = utils.accuracy(inputs, input_lengths, labels, converter, batch_size)
 
         # Back prop.
         optimizer.zero_grad()
@@ -171,9 +176,9 @@ def valid(valid_loader, model, criterion, logger):
         image = image.to(device)
         batch_size = image.size(0)
 
-        length = [min(max_len, len(t)) for t in label]
+        length = [min(max_target_len, len(t)) for t in label]
         length = torch.LongTensor(length)
-        text = [utils.encode_text(t[:max_len]) for t in label]
+        text = [utils.encode_target(t[:max_target_len]) for t in label]
         text = torch.LongTensor(text).to(device)
 
         # Forward prop.
@@ -181,7 +186,7 @@ def valid(valid_loader, model, criterion, logger):
         preds_size = Variable(torch.IntTensor([preds.size(0)] * batch_size))
 
         # Calculate loss
-        loss = criterion(preds, text, preds_size, length) / batch_size
+        loss = criterion(preds, text, preds_size, length)
         acc = utils.accuracy(preds, preds_size, label, converter, batch_size)
 
         # Keep track of metrics

@@ -6,7 +6,7 @@ import os
 import cv2 as cv
 import torch
 
-from config import max_len, dict
+from config import max_target_len, dict
 
 
 def clip_gradient(optimizer, grad_clip):
@@ -206,8 +206,8 @@ def loadData(v, data):
     v.data.resize_(data.size()).copy_(data)
 
 
-def encode_text(t):
-    return [dict[c] for c in t] + [0] * (max_len - len(t))
+def encode_target(target):
+    return [dict[c] for c in target] + [0] * (max_target_len - len(target))
 
 
 def get_images_for_test():
