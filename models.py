@@ -1,6 +1,6 @@
 import torch.nn as nn
 from torchsummary import summary
-
+import torch
 from config import device
 
 
@@ -74,7 +74,9 @@ class CRNN(nn.Module):
         b, c, h, w = conv.size()
         assert h == 1, "the height of conv must be 1"
         conv = conv.squeeze(2)
+        # print(conv.size())
         conv = conv.permute(2, 0, 1)  # [w, b, c]
+        # print(conv.size())
         #
         # rnn features
         output = self.rnn(conv)
@@ -84,4 +86,4 @@ class CRNN(nn.Module):
 
 if __name__ == "__main__":
     model = CRNN(32, 3, 37, 256).to(device)
-    summary(model, (1, 3, 32, 100))
+    summary(model, (3, 32, 100))
