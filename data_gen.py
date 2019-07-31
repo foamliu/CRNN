@@ -29,7 +29,6 @@ class MJSynthDataset(Dataset):
         print('loading {} annotation data...'.format(split))
         with open(annotation_file, 'r') as file:
             self.lines = file.readlines()
-            self.lines = self.lines[:100000]
 
         self.transformer = data_transforms[split]
 
