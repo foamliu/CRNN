@@ -46,7 +46,11 @@ if __name__ == "__main__":
         converter = utils.strLabelConverter(alphabet)
 
         _, preds = preds.max(2)
+        print('preds.size():' + str(preds.size()))
+        print(preds)
         preds = preds.transpose(1, 0).contiguous().view(-1)
+        print('preds.size():' + str(preds.size()))
+        print(preds)
 
         preds_size = Variable(torch.IntTensor([preds.size(0)]))
         raw_pred = converter.decode(preds.data, preds_size.data, raw=True)
