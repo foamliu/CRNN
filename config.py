@@ -5,7 +5,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # sets de
 imgH = 32
 imgW = 100
 keep_ratio = True
-max_len = 30
+max_len = 32
 nc = 3
 nh = 256
 
