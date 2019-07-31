@@ -208,3 +208,15 @@ def loadData(v, data):
 
 def encode_text(t):
     return [dict[c] for c in t] + [0] * (max_len - len(t))
+
+
+def get_images_for_test():
+    from config import annotation_files
+    split = 'test'
+    print('loading {} annotation data...'.format('test'))
+    annotation_file = annotation_files[split]
+    with open(annotation_file, 'r') as file:
+        lines = file.readlines()
+
+    image_paths = [line.split(' ')[0] for line in lines]
+    return image_paths
