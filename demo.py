@@ -1,5 +1,4 @@
-import random
-from torch.autograd import Variable
+import os
 import random
 
 import cv2 as cv
@@ -9,7 +8,7 @@ from torchvision import transforms
 from tqdm import tqdm
 
 import utils
-from config import device, imgH, imgW, alphabet
+from config import device, imgH, imgW, alphabet, IMG_FOLDER
 from data_gen import data_transforms
 
 if __name__ == "__main__":
@@ -29,8 +28,10 @@ if __name__ == "__main__":
 
     for idx in tqdm(range(len(im_fn_list))):
         im_fn = im_fn_list[idx]
+        im_fn = os.path.join(IMG_FOLDER, im_fn)
+        print(im_fn)
         img = cv.imread(im_fn)
-        img = cv.resize((imgW, imgH), cv.INTER_CUBIC)
+        img = cv.resize(img, (imgW, imgH), cv.INTER_CUBIC)
         img = img[..., ::-1]  # RGB
 
         img = transforms.ToPILImage()(img)
