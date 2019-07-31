@@ -1,12 +1,11 @@
 import argparse
-import collections
 import logging
 import os
 
 import cv2 as cv
 import torch
 
-from config import max_target_len, dict
+from config import max_target_len, dict, converter
 
 
 def clip_gradient(optimizer, grad_clip):
@@ -73,15 +72,15 @@ def get_learning_rate(optimizer):
     return optimizer.param_groups[0]['lr']
 
 
-def accuracy(preds, preds_size, cpu_texts, converter, batch_size):
+def accuracy(inputs, input_lengths, labels, batch_size):
     n_correct = 0
     # print(preds.size())
-    _, preds = preds.max(2)
+    _, inputs = inputs.max(2)
     # print(preds.size())
     # preds = preds.squeeze(2)
-    preds = preds.transpose(1, 0).contiguous().view(-1)
-    sim_preds = converter.decode(preds.data, preds_size.data, raw=False)
-    for pred, target in zip(sim_preds, cpu_texts):
+    inputs = inputs.transpose(1, 0).contiguous().view(-1)
+    sim_preds = converter.decode(inputs.data, input_lengths.data, raw=False)
+    for pred, target in zip(sim_preds, labels):
         if pred == target.lower():
             n_correct += 1
     accuracy = n_correct / float(batch_size)
@@ -91,11 +90,9 @@ def accuracy(preds, preds_size, cpu_texts, converter, batch_size):
 def parse_args():
     parser = argparse.ArgumentParser(description='Train CRNN network')
     # general
-    parser.add_argument('--network', default='r50', help='specify network')
-    parser.add_argument('--pretrained', type=bool, default=True, help='pretrained model')
     parser.add_argument('--optimizer', default='adam', help='optimizer')
     parser.add_argument('--beta1', type=float, default=0.5, help='image input size.')
-    parser.add_argument('--batch-size', type=int, default=2048, help='batch size')
+    parser.add_argument('--batch-size', type=int, default=64, help='batch size')
     parser.add_argument('--lr', type=float, default=0.01, help='start learning rate')
     parser.add_argument('--end-epoch', type=int, default=1000, help='training epoch size.')
     parser.add_argument('--checkpoint', type=str, default=None, help='checkpoint')
@@ -123,83 +120,6 @@ def draw_str(dst, target, s):
 def ensure_folder(folder):
     if not os.path.exists(folder):
         os.makedirs(folder)
-
-
-class strLabelConverter(object):
-    """Convert between str and label.
-    NOTE:
-        Insert `blank` to the alphabet for CTC.
-    Args:
-        alphabet (str): set of the possible characters.
-        ignore_case (bool, default=True): whether or not to ignore all of the case.
-    """
-
-    def __init__(self, alphabet, ignore_case=True):
-        self._ignore_case = ignore_case
-        if self._ignore_case:
-            alphabet = alphabet.lower()
-        self.alphabet = alphabet + '-'  # for `-1` index
-
-        self.dict = {}
-        for i, char in enumerate(alphabet):
-            # NOTE: 0 is reserved for 'blank' required by wrap_ctc
-            self.dict[char] = i + 1
-
-    def encode(self, text):
-        """Support batch or single str.
-        Args:
-            text (str or list of str): texts to convert.
-        Returns:
-            torch.IntTensor [length_0 + length_1 + ... length_{n - 1}]: encoded texts.
-            torch.IntTensor [n]: length of each text.
-        """
-        if isinstance(text, str):
-            text = [
-                self.dict[char.lower() if self._ignore_case else char]
-                for char in text
-            ]
-            length = [len(text)]
-        elif isinstance(text, collections.Iterable):
-            length = [len(s) for s in text]
-            text = ''.join(text)
-            text, _ = self.encode(text)
-        return (torch.IntTensor(text), torch.IntTensor(length))
-
-    def decode(self, t, length, raw=False):
-        """Decode encoded texts back into strs.
-        Args:
-            torch.IntTensor [length_0 + length_1 + ... length_{n - 1}]: encoded texts.
-            torch.IntTensor [n]: length of each text.
-        Raises:
-            AssertionError: when the texts and its length does not match.
-        Returns:
-            text (str or list of str): texts to convert.
-        """
-        if length.numel() == 1:
-            length = length[0]
-            assert t.numel() == length, "text with length: {} does not match declared length: {}".format(t.numel(),
-                                                                                                         length)
-            if raw:
-                return ''.join([self.alphabet[i - 1] for i in t])
-            else:
-                char_list = []
-                for i in range(length):
-                    if t[i] != 0 and (not (i > 0 and t[i - 1] == t[i])):
-                        char_list.append(self.alphabet[t[i] - 1])
-                return ''.join(char_list)
-        else:
-            # batch mode
-            assert t.numel() == length.sum(), "texts with length: {} does not match declared length: {}".format(
-                t.numel(), length.sum())
-            texts = []
-            index = 0
-            for i in range(length.numel()):
-                l = length[i]
-                texts.append(
-                    self.decode(
-                        t[index:index + l], torch.IntTensor([l]), raw=raw))
-                index += l
-            return texts
 
 
 def loadData(v, data):
