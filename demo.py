@@ -41,6 +41,7 @@ if __name__ == "__main__":
 
         preds = model(img)
         print('preds.size():' + str(preds.size()))
+        print(preds)
 
         converter = utils.strLabelConverter(alphabet)
 
