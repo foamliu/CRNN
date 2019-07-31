@@ -58,7 +58,7 @@ def train_net(args):
     model = model.to(device)
 
     # Loss function
-    criterion = nn.CTCLoss(reduction='sum')
+    criterion = nn.CTCLoss(reduction='sum').to(device)
 
     # Custom dataloaders
     train_dataset = data_gen.MJSynthDataset('train')
