@@ -26,7 +26,7 @@ if __name__ == "__main__":
     im_fn_list = utils.get_images_for_test()
     im_fn_list = random.sample(im_fn_list, 10)
 
-    for idx in tqdm(range(len(im_fn_list))):
+    for idx in range(len(im_fn_list)):
         im_fn = im_fn_list[idx]
         im_fn = os.path.join(IMG_FOLDER, im_fn)
         print(im_fn)
