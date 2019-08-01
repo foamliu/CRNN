@@ -37,7 +37,9 @@ if __name__ == "__main__":
 
     lines = []
 
-    for file in tqdm(files):
+    num_files = len(files)
+    for i in tqdm(range(1, num_files + 1)):
+        file = 'word_{}.png'.format(i)
         im_fn = os.path.join(image_folder, file)
         img = cv.imread(im_fn)
         img = cv.resize(img, (imgW, imgH), cv.INTER_CUBIC)
