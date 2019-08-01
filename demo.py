@@ -1,3 +1,4 @@
+import json
 import os
 import random
 
@@ -25,11 +26,14 @@ if __name__ == "__main__":
     im_fn_list = utils.get_images_for_test()
     im_fn_list = random.sample(im_fn_list, 10)
 
+    results = []
+
     for idx in range(len(im_fn_list)):
         im_fn = im_fn_list[idx]
         print('filename: ' + im_fn)
         im_fn = os.path.join(IMG_FOLDER, im_fn)
         img = cv.imread(im_fn)
+        cv.imwrite('images/img_{}.jpg', img)
         img = cv.resize(img, (imgW, imgH), cv.INTER_CUBIC)
         img = img[..., ::-1]  # RGB
 
@@ -46,4 +50,9 @@ if __name__ == "__main__":
         preds_size = Variable(torch.IntTensor([preds.size(0)]))
         raw_pred = converter.decode(preds.data, preds_size.data, raw=True)
         sim_pred = converter.decode(preds.data, preds_size.data, raw=False)
-        print('%-20s => %-20s' % (raw_pred, sim_pred))
+        result = '%-20s => %-20s' % (raw_pred, sim_pred)
+        print(result)
+        results.append(result)
+
+    with open('results.json', 'w') as file:
+        json.dump(results, file)
