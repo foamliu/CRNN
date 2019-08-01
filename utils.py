@@ -81,7 +81,7 @@ def accuracy(inputs, input_lengths, labels, batch_size):
     inputs = inputs.transpose(1, 0).contiguous().view(-1)
     sim_preds = converter.decode(inputs.data, input_lengths.data, raw=False)
     for pred, target in zip(sim_preds, labels):
-        if pred == target.lower():
+        if pred == target:
             n_correct += 1
     accuracy = n_correct / float(batch_size)
     return accuracy
