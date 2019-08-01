@@ -37,6 +37,7 @@ if __name__ == "__main__":
 
     lines = []
 
+    print('evaluating...')
     num_files = len(files)
     for i in tqdm(range(num_files)):
         file = 'word_{}.png'.format(i + 1)
