@@ -69,8 +69,8 @@ if __name__ == "__main__":
     for data in tqdm(dataset):
         label = data[1]
         lengths.append(len(label))
-        for c in label:
-            alphabet.add(c)
+        alphabet = alphabet | set(label)
+
     insights = dict()
     insights['alphabet'] = alphabet
     insights['lengths'] = lengths
