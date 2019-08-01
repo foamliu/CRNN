@@ -1,3 +1,5 @@
+import collections
+
 import torch
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # sets device for model and PyTorch tensors
@@ -5,7 +7,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # sets de
 imgH = 32
 imgW = 100
 keep_ratio = True
-max_target_len = 10
+max_target_len = 25
 nc = 3
 nh = 256
 
