@@ -54,11 +54,24 @@ class MJSynthDataset(Dataset):
         img = transforms.ToPILImage()(img)
         img = self.transformer(img)
 
-        text = str(img_path.split('_')[1].lower())
+        text = str(img_path.split('_')[1])
 
         return img, text
 
 
 if __name__ == "__main__":
-    dataset = MJSynthDataset('val')
-    print(dataset[1])
+    import json
+
+    lengths = []
+    alphabet = set()
+    dataset = MJSynthDataset('train')
+    for data in dataset:
+        label = data[1]
+        lengths.append(len(label))
+        for c in label:
+            alphabet.add(c)
+    insights = dict()
+    insights['alphabet'] = alphabet
+    insights['lengths'] = lengths
+    with open('insights.json', 'w') as file:
+        json.dump(insights, file)
