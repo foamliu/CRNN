@@ -143,8 +143,7 @@ def train(train_loader, model, criterion, optimizer, epoch, writer, logger):
         optimizer.step()
 
         # Keep track of metrics
-        if loss.item() != float('inf'):
-            losses.update(loss.item(), batch_size)
+        losses.update(loss.item(), batch_size)
         accs.update(acc, batch_size)
 
         global num_updates
