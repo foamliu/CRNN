@@ -45,3 +45,16 @@ Pick 10 random test examples from ICDAR-2015:
 ```bash
 $ python demo.py
 ```
+
+Image| Word|
+|----|----|
+|![image](https://github.com/foamliu/CRNN/raw/master/images/img_0.jpg)|$(word_0)|
+|![image](https://github.com/foamliu/CRNN/raw/master/images/img_1.jpg)|$(word_1)|
+|![image](https://github.com/foamliu/CRNN/raw/master/images/img_2.jpg)|$(word_2)|
+|![image](https://github.com/foamliu/CRNN/raw/master/images/img_3.jpg)|$(word_3)|
+|![image](https://github.com/foamliu/CRNN/raw/master/images/img_4.jpg)|$(word_4)|
+|![image](https://github.com/foamliu/CRNN/raw/master/images/img_5.jpg)|$(word_5)|
+|![image](https://github.com/foamliu/CRNN/raw/master/images/img_6.jpg)|$(word_6)|
+|![image](https://github.com/foamliu/CRNN/raw/master/images/img_7.jpg)|$(word_7)|
+|![image](https://github.com/foamliu/CRNN/raw/master/images/img_8.jpg)|$(word_8)|
+|![image](https://github.com/foamliu/CRNN/raw/master/images/img_9.jpg)|$(word_9)|
