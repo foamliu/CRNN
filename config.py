@@ -97,7 +97,7 @@ class strLabelConverter(object):
             return texts
 
 
-converter = strLabelConverter(alphabet=alphabet)
+converter = strLabelConverter(alphabet=alphabet, ignore_case=False)
 
 IMG_FOLDER = 'mnt/ramdisk/max/90kDICT32px/'
 
