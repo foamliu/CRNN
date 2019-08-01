@@ -63,11 +63,16 @@ if __name__ == "__main__":
     import json
     from tqdm import tqdm
 
+    annotation_file = annotation_files['train']
+    with open(annotation_file, 'r') as file:
+        lines = file.readlines()
+
     lengths = []
     alphabet = set()
-    dataset = MJSynthDataset('train')
-    for data in tqdm(dataset):
-        label = data[1]
+
+    for line in tqdm(lines):
+        img_path = line.split(' ')[0]
+        label = str(img_path.split('_')[1])
         lengths.append(len(label))
         alphabet = alphabet | set(label)
 
