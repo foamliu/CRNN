@@ -58,5 +58,6 @@ if __name__ == "__main__":
 
         lines.append('{}, \"{}\"\n'.format(file, sim_pred))
 
+    lines = sorted(lines)
     with open('submit.txt', 'w') as file:
         file.writelines(lines)
