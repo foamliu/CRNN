@@ -122,10 +122,6 @@ def ensure_folder(folder):
         os.makedirs(folder)
 
 
-def loadData(v, data):
-    v.data.resize_(data.size()).copy_(data)
-
-
 def encode_target(target):
     return [dict[c] for c in target] + [0] * (max_target_len - len(target))
 
