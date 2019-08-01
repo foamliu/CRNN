@@ -33,7 +33,7 @@ if __name__ == "__main__":
         print('filename: ' + im_fn)
         im_fn = os.path.join(IMG_FOLDER, im_fn)
         img = cv.imread(im_fn)
-        cv.imwrite('images/img_{}.jpg', img)
+        cv.imwrite('images/img_{}.jpg'.format(idx), img)
         img = cv.resize(img, (imgW, imgH), cv.INTER_CUBIC)
         img = img[..., ::-1]  # RGB
 
