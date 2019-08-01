@@ -77,7 +77,9 @@ if __name__ == "__main__":
         alphabet = alphabet | set(label)
 
     insights = dict()
-    insights['alphabet'] = alphabet
+    insights['alphabet'] = list(alphabet)
     insights['lengths'] = lengths
     with open('insights.json', 'w') as file:
         json.dump(insights, file)
+
+    print('max(lengths): ' + str(max(lengths)))

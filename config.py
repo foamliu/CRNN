@@ -9,7 +9,7 @@ max_target_len = 10
 nc = 3
 nh = 256
 
-alphabet = '0123456789abcdefghijklmnopqrstuvwxyz'
+alphabet = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 nclass = len(alphabet) + 1
 
 dict = {}
