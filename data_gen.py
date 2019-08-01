@@ -61,11 +61,12 @@ class MJSynthDataset(Dataset):
 
 if __name__ == "__main__":
     import json
+    from tqdm import tqdm
 
     lengths = []
     alphabet = set()
     dataset = MJSynthDataset('train')
-    for data in dataset:
+    for data in tqdm(dataset):
         label = data[1]
         lengths.append(len(label))
         for c in label:
