@@ -82,4 +82,5 @@ if __name__ == "__main__":
     with open('insights.json', 'w') as file:
         json.dump(insights, file)
 
+    print('len(alphabet): ' + str(len(alphabet)))
     print('max(lengths): ' + str(max(lengths)))
