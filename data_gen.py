@@ -1,6 +1,7 @@
 import os
-import numpy as np
+
 import cv2 as cv
+import numpy as np
 from torch.utils.data import Dataset
 
 from config import IMG_FOLDER, annotation_files, imgH, imgW
@@ -37,7 +38,7 @@ class MJSynthDataset(Dataset):
         img = np.reshape(img, (1, imgH, imgW))
 
         img = img[..., ::-1]  # RGB
-        img = img / 255. - 0.5
+        img = np.array(img / 255. - 0.5, dtype=np.float32)
 
         text = str(img_path.split('_')[1])
 
