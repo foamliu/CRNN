@@ -8,7 +8,7 @@ imgH = 32
 imgW = 100
 keep_ratio = True
 max_target_len = 25
-nc = 3
+nc = 1
 nh = 256
 
 alphabet = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
