@@ -5,3 +5,4 @@ checkpoint.tar
 data/
 mnt/
 runs/
+nohup.out
