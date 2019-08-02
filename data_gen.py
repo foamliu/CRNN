@@ -15,8 +15,6 @@ class MJSynthDataset(Dataset):
         with open(annotation_file, 'r') as file:
             self.lines = file.readlines()
 
-        self.transformer = data_transforms[split]
-
     def __len__(self):
         return len(self.lines)
 
