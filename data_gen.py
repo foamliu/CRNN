@@ -33,7 +33,9 @@ class MJSynthDataset(Dataset):
         img_path = os.path.join(IMG_FOLDER, img_path)
         img = cv.imread(img_path, 0)
         img = cv.resize(img, (imgW, imgH), cv.INTER_CUBIC)
+        img = np.transpose(img, (1, 0))
         img = np.reshape(img, (1, imgH, imgW))
+
         img = img[..., ::-1]  # RGB
         img = img / 255. - 0.5
 
