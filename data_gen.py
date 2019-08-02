@@ -1,5 +1,5 @@
 import os
-
+import numpy as np
 import cv2 as cv
 from torch.utils.data import Dataset
 
@@ -33,6 +33,7 @@ class MJSynthDataset(Dataset):
         img_path = os.path.join(IMG_FOLDER, img_path)
         img = cv.imread(img_path, 0)
         img = cv.resize(img, (imgW, imgH), cv.INTER_CUBIC)
+        img = np.reshape(img, (1, imgH, imgW))
         img = img[..., ::-1]  # RGB
         img = img / 255. - 0.5
 
