@@ -1,23 +1,9 @@
 import os
 
 import cv2 as cv
-import torchvision.transforms as transforms
 from torch.utils.data import Dataset
 
 from config import IMG_FOLDER, annotation_files, imgH, imgW
-
-# Data augmentation and normalization for training
-# Just normalization for validation
-data_transforms = {
-    'train': transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Normalize([0.5], [0.5]),
-    ]),
-    'val': transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Normalize([0.5], [0.5])
-    ]),
-}
 
 
 class MJSynthDataset(Dataset):
@@ -50,8 +36,7 @@ class MJSynthDataset(Dataset):
         img = cv.imread(img_path, 0)
         img = cv.resize(img, (imgW, imgH), cv.INTER_CUBIC)
         img = img[..., ::-1]  # RGB
-        img = transforms.ToPILImage()(img)
-        img = self.transformer(img)
+        img = img / 255. - 0.5
 
         text = str(img_path.split('_')[1])
 
