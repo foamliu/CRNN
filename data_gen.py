@@ -1,10 +1,24 @@
 import os
 
 import cv2 as cv
-import numpy as np
+import torchvision.transforms as transforms
 from torch.utils.data import Dataset
 
 from config import IMG_FOLDER, annotation_files, imgH, imgW
+
+# Data augmentation and normalization for training
+# Just normalization for validation
+data_transforms = {
+    'train': transforms.Compose([
+        transforms.ColorJitter(0.5, 0.5, 0.5, 0.25),
+        transforms.ToTensor(),
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+    ]),
+    'val': transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+    ]),
+}
 
 
 class MJSynthDataset(Dataset):
@@ -15,6 +29,8 @@ class MJSynthDataset(Dataset):
         print('loading {} annotation data...'.format(split))
         with open(annotation_file, 'r') as file:
             self.lines = file.readlines()
+
+        self.transformer = data_transforms[split]
 
     def __len__(self):
         return len(self.lines)
@@ -32,13 +48,11 @@ class MJSynthDataset(Dataset):
         line = self.lines[i]
         img_path = line.split(' ')[0]
         img_path = os.path.join(IMG_FOLDER, img_path)
-        img = cv.imread(img_path, 0)
+        img = cv.imread(img_path)
         img = cv.resize(img, (imgW, imgH), cv.INTER_CUBIC)
-        img = np.transpose(img, (1, 0))
-        img = np.reshape(img, (1, imgH, imgW))
-
         img = img[..., ::-1]  # RGB
-        img = np.array(img / 255. - 0.5, dtype=np.float32)
+        img = transforms.ToPILImage()(img)
+        img = self.transformer(img)
 
         text = str(img_path.split('_')[1])
 
