@@ -69,7 +69,7 @@ class MJSynthDataset(Dataset):
         while True:
             try:
                 return self.get_data_record(idx)
-            except cv.error:
+            except Exception:
                 import random
                 idx = random.randint(0, len(self.lines) - 1)
 
