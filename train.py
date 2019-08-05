@@ -73,17 +73,19 @@ def train_net(args):
     # Epochs
     for epoch in range(start_epoch, args.end_epoch):
         # One epoch's training
-        train(train_loader=train_loader,
-              model=model,
-              criterion=criterion,
-              optimizer=optimizer,
-              epoch=epoch,
-              logger=logger,
-              writer=writer)
+        train_loss, train_acc = train(train_loader=train_loader,
+                                      model=model,
+                                      criterion=criterion,
+                                      optimizer=optimizer,
+                                      epoch=epoch,
+                                      logger=logger,
+                                      writer=writer)
         effective_lr = utils.get_learning_rate(optimizer)
         print('\nCurrent effective learning rate: {}\n'.format(effective_lr))
 
         writer.add_scalar('Learning_Rate', effective_lr, epoch)
+        writer.add_scalar('Train_Loss', train_loss, num_updates)
+        writer.add_scalar('Train_Accuracy', train_acc, num_updates)
 
         # One epoch's validation
         valid_loss, valid_acc = valid(valid_loader=valid_loader,
@@ -95,7 +97,7 @@ def train_net(args):
 
         # Check if there was an improvement
         is_best = valid_loss < best_loss
-        best_loss = max(valid_loss, best_loss)
+        best_loss = min(valid_loss, best_loss)
         if not is_best:
             epochs_since_improvement += 1
             print("\nEpochs since last improvement: %d\n" % (epochs_since_improvement,))
@@ -106,7 +108,7 @@ def train_net(args):
         utils.save_checkpoint(epoch, epochs_since_improvement, model, optimizer, best_loss, is_best)
 
 
-def train(train_loader, model, criterion, optimizer, epoch, writer, logger):
+def train(train_loader, model, criterion, optimizer, epoch, logger):
     model.train()  # train mode (dropout and batchnorm is used)
 
     losses = utils.AverageMeter()
@@ -155,8 +157,6 @@ def train(train_loader, model, criterion, optimizer, epoch, writer, logger):
                         'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
                         'Accuracy {acc.val:.4f} ({acc.avg:.4f})'.format(epoch, i, len(train_loader), loss=losses,
                                                                         acc=accs))
-            writer.add_scalar('Train_Loss', loss.item(), num_updates)
-            writer.add_scalar('Train_Accuracy', acc, num_updates)
 
     return losses.avg, accs.avg
 
