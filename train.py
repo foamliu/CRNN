@@ -12,8 +12,6 @@ import utils
 from config import device, grad_clip, print_freq, num_workers, imgH, nc, nclass, nh, max_target_len
 from models import CRNN
 
-num_updates = 0
-
 
 def train_net(args):
     manual_seed = 7
@@ -78,14 +76,13 @@ def train_net(args):
                                       criterion=criterion,
                                       optimizer=optimizer,
                                       epoch=epoch,
-                                      logger=logger,
-                                      writer=writer)
+                                      logger=logger)
         effective_lr = utils.get_learning_rate(optimizer)
         print('\nCurrent effective learning rate: {}\n'.format(effective_lr))
 
         writer.add_scalar('Learning_Rate', effective_lr, epoch)
-        writer.add_scalar('Train_Loss', train_loss, num_updates)
-        writer.add_scalar('Train_Accuracy', train_acc, num_updates)
+        writer.add_scalar('Train_Loss', train_loss, epoch)
+        writer.add_scalar('Train_Accuracy', train_acc, epoch)
 
         # One epoch's validation
         valid_loss, valid_acc = valid(valid_loader=valid_loader,
@@ -148,9 +145,6 @@ def train(train_loader, model, criterion, optimizer, epoch, logger):
         losses.update(loss.item(), batch_size)
         accs.update(acc, batch_size)
 
-        global num_updates
-        num_updates += 1
-
         # Print status
         if i % print_freq == 0:
             logger.info('Epoch: [{0}][{1}/{2}]\t'
@@ -192,7 +186,7 @@ def valid(valid_loader, model, criterion, logger):
         accs.update(acc, batch_size)
 
     # Print status
-    logger.info('TEST Loss {loss.val:.4f} ({loss.avg:.4f})\t'
+    logger.info('Validation Loss {loss.val:.4f} ({loss.avg:.4f})\t'
                 'Accuracy {acc.val:.4f} ({acc.avg:.4f})\n'.format(loss=losses, acc=accs))
 
     return losses.avg, accs.avg
