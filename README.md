@@ -48,13 +48,13 @@ $ python demo.py
 
 Image| Word|
 |----|----|
-|![image](https://github.com/foamliu/CRNN/raw/master/images/img_0.jpg)|m----a--r-a-s-c--h-i-n--o- => maraschino          |
-|![image](https://github.com/foamliu/CRNN/raw/master/images/img_1.jpg)|h--------e----i---d----i-- => heidi               |
-|![image](https://github.com/foamliu/CRNN/raw/master/images/img_2.jpg)|u-------n-iiff--i-e---d--- => unified             |
-|![image](https://github.com/foamliu/CRNN/raw/master/images/img_3.jpg)|t-----u---s--s-a---u---d-- => tussaud             |
-|![image](https://github.com/foamliu/CRNN/raw/master/images/img_4.jpg)|s---c-r-a--p-h--e-a--p--s- => scrapheaps          |
-|![image](https://github.com/foamliu/CRNN/raw/master/images/img_5.jpg)|f---l--u--f--f-i-nn-e--s-s => fluffiness          |
-|![image](https://github.com/foamliu/CRNN/raw/master/images/img_6.jpg)|r---e---o-r--ie--n-t--e-d- => reoriented          |
-|![image](https://github.com/foamliu/CRNN/raw/master/images/img_7.jpg)|b-------l-o---o----p---s-- => bloops              |
-|![image](https://github.com/foamliu/CRNN/raw/master/images/img_8.jpg)|d----e-s--p--e--r-a--t--e- => desperate           |
-|![image](https://github.com/foamliu/CRNN/raw/master/images/img_9.jpg)|s----h-o--w--g--r-o-u-n-d- => showground          |
+|![image](https://github.com/foamliu/CRNN/raw/master/images/img_0.jpg)|U---n-r-e--a-l--is-t-i---c => Unrealistic         |
+|![image](https://github.com/foamliu/CRNN/raw/master/images/img_1.jpg)|O---V-E-R--R-U--L--E-----S => OVERRULES           |
+|![image](https://github.com/foamliu/CRNN/raw/master/images/img_2.jpg)|W---E-S--T-M-IIN-S-T-E---R => WESTMINSTER         |
+|![image](https://github.com/foamliu/CRNN/raw/master/images/img_3.jpg)|m-------o----r--ee-l-----s => morels              |
+|![image](https://github.com/foamliu/CRNN/raw/master/images/img_4.jpg)|P--E-R-P-L-E-A-I-T-A--R--S => PERPLEAITARS        |
+|![image](https://github.com/foamliu/CRNN/raw/master/images/img_5.jpg)|E----------D-------------P => EDP                 |
+|![image](https://github.com/foamliu/CRNN/raw/master/images/img_6.jpg)|G-----e-o-lo--giis-t-----s => Geologists          |
+|![image](https://github.com/foamliu/CRNN/raw/master/images/img_7.jpg)|r-----e----b---a----t---ee => rebate              |
+|![image](https://github.com/foamliu/CRNN/raw/master/images/img_8.jpg)|F--O-R-E-D-O--O-M--IIN---G => FOREDOOMING         |
+|![image](https://github.com/foamliu/CRNN/raw/master/images/img_9.jpg)|u--n--re-p-r-es-e-n-te---d => unrepresented       |
