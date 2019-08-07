@@ -8,11 +8,11 @@ imgH = 32
 imgW = 100
 keep_ratio = True
 max_target_len = 25
-nc = 3
-nh = 256
+num_channels = 3
+num_hidden = 256
 
 alphabet = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-nclass = len(alphabet) + 1
+num_classes = len(alphabet) + 1
 
 dict = {}
 for i, char in enumerate(alphabet):

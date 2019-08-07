@@ -9,7 +9,7 @@ from tqdm import tqdm
 
 import data_gen
 import utils
-from config import device, print_freq, num_workers, imgH, nc, nclass, nh, max_target_len
+from config import device, print_freq, num_workers, imgH, num_channels, num_classes, num_hidden, max_target_len
 from models import CRNN
 from optimizer import CRNNOptimizer
 
@@ -36,14 +36,14 @@ def train_net(args):
 
     # Initialize / load checkpoint
     if checkpoint is None:
-        model = CRNN(imgH, nc, nclass, nh)
+        model = CRNN(imgH, num_channels, num_classes, num_hidden)
         model.apply(weights_init)
         # model = nn.DataParallel(model)
 
         optimizer = CRNNOptimizer(
             torch.optim.Adam(model.parameters(), betas=(0.9, 0.98), eps=1e-09),
             args.k,
-            args.d_model,
+            num_hidden,
             args.warmup_steps)
 
     else:

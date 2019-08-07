@@ -91,12 +91,17 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Train CRNN network')
     # general
     parser.add_argument('--optimizer', default='adam', help='optimizer')
-    parser.add_argument('--beta1', type=float, default=0.5, help='image input size.')
     parser.add_argument('--batch-size', type=int, default=64, help='batch size')
     parser.add_argument('--lr', type=float, default=0.01, help='start learning rate')
     parser.add_argument('--end-epoch', type=int, default=1000, help='training epoch size.')
-    parser.add_argument('--checkpoint', type=str, default=None, help='checkpoint')
 
+    # optimizer
+    parser.add_argument('--k', default=0.01, type=float,
+                        help='tunable scalar multiply to learning rate')
+    parser.add_argument('--warmup_steps', default=50000, type=int,
+                        help='warmup steps')
+
+    parser.add_argument('--checkpoint', type=str, default=None, help='checkpoint')
     args = parser.parse_args()
     return args
 
