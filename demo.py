@@ -9,7 +9,7 @@ from torchvision import transforms
 
 import utils
 from config import device, imgH, imgW, IMG_FOLDER, converter
-from data_gen import data_transforms
+from data_gen import data_transforms, image_resize
 
 if __name__ == "__main__":
     checkpoint = 'BEST_checkpoint.tar'
@@ -34,7 +34,7 @@ if __name__ == "__main__":
         im_fn = os.path.join(IMG_FOLDER, im_fn)
         img = cv.imread(im_fn)
         cv.imwrite('images/img_{}.jpg'.format(idx), img)
-        img = cv.resize(img, (imgW, imgH), cv.INTER_CUBIC)
+        img = image_resize(img, width=imgW, height=imgH, inter=cv.INTER_CUBIC)
         img = img[..., ::-1]  # RGB
 
         img = transforms.ToPILImage()(img)
@@ -42,7 +42,8 @@ if __name__ == "__main__":
         img = img.to(device)
         img = img.unsqueeze(0)
 
-        preds = model(img)
+        with torch.no_grad:
+            preds = model(img)
 
         _, preds = preds.max(2)
         preds = preds.transpose(1, 0).contiguous().view(-1)
