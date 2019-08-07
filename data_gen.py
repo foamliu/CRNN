@@ -5,6 +5,7 @@ import torchvision.transforms as transforms
 from torch.utils.data import Dataset
 
 from config import IMG_FOLDER, annotation_files, imgH, imgW
+from image_aug import image_aug
 
 # Data augmentation and normalization for training
 # Just normalization for validation
@@ -78,6 +79,7 @@ class MJSynthDataset(Dataset):
         img_path = line.split(' ')[0]
         img_path = os.path.join(IMG_FOLDER, img_path)
         img = cv.imread(img_path)
+        img = image_aug(img)
         img = image_resize(img, width=imgW, height=imgH, inter=cv.INTER_CUBIC)
         img = img[..., ::-1]  # RGB
         img = transforms.ToPILImage()(img)
