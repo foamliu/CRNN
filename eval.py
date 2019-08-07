@@ -8,7 +8,7 @@ from torchvision import transforms
 from tqdm import tqdm
 
 from config import device, imgW, imgH, converter
-from data_gen import data_transforms
+from data_gen import data_transforms, image_resize
 
 
 def extract(filename, folder):
@@ -43,7 +43,8 @@ if __name__ == "__main__":
         file = 'word_{}.png'.format(i + 1)
         im_fn = os.path.join(image_folder, file)
         img = cv.imread(im_fn)
-        img = cv.resize(img, (imgW, imgH), cv.INTER_CUBIC)
+        # img = cv.resize(img, (imgW, imgH), cv.INTER_CUBIC)
+        img = image_resize(img, width=imgW, height=imgH, inter=cv.INTER_CUBIC)
         img = img[..., ::-1]  # RGB
 
         img = transforms.ToPILImage()(img)
