@@ -1,7 +1,7 @@
 import numpy as np
 
 
-class CrnnOptimizer(object):
+class CRNNOptimizer(object):
     """A simple wrapper class for learning rate scheduling"""
 
     def __init__(self, optimizer, max_lr=1e-3, min_lr=1e-5, warmup_steps=50000, k=0.01):

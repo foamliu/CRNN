@@ -9,8 +9,9 @@ from tqdm import tqdm
 
 import data_gen
 import utils
-from config import device, grad_clip, print_freq, num_workers, imgH, nc, nclass, nh, max_target_len
+from config import device, print_freq, num_workers, imgH, nc, nclass, nh, max_target_len
 from models import CRNN
+from optimizer import CRNNOptimizer
 
 
 def train_net(args):
@@ -39,11 +40,11 @@ def train_net(args):
         model.apply(weights_init)
         # model = nn.DataParallel(model)
 
-        if args.optimizer == 'sgd':
-            optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=args.mom,
-                                        weight_decay=args.weight_decay)
-        else:
-            optimizer = torch.optim.Adam(model.parameters(), lr=args.lr, betas=(args.beta1, 0.999))
+        optimizer = CRNNOptimizer(
+            torch.optim.Adam(model.parameters(), betas=(0.9, 0.98), eps=1e-09),
+            args.k,
+            args.d_model,
+            args.warmup_steps)
 
     else:
         checkpoint = torch.load(checkpoint)
@@ -77,12 +78,11 @@ def train_net(args):
                                       optimizer=optimizer,
                                       epoch=epoch,
                                       logger=logger)
-        effective_lr = utils.get_learning_rate(optimizer)
-        print('\nCurrent effective learning rate: {}\n'.format(effective_lr))
-
-        writer.add_scalar('Learning_Rate', effective_lr, epoch)
         writer.add_scalar('Train_Loss', train_loss, epoch)
         writer.add_scalar('Train_Accuracy', train_acc, epoch)
+
+        print('\nLearning rate: {}\n'.format(optimizer.lr))
+        writer.add_scalar('Learning_Rate', optimizer.lr, epoch)
 
         # One epoch's validation
         valid_loss, valid_acc = valid(valid_loader=valid_loader,
@@ -136,7 +136,7 @@ def train(train_loader, model, criterion, optimizer, epoch, logger):
         loss.backward()
 
         # Clip gradients
-        utils.clip_gradient(optimizer, grad_clip)
+        # utils.clip_gradient(optimizer, grad_clip)
 
         # Update weights
         optimizer.step()
