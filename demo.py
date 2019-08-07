@@ -42,7 +42,7 @@ if __name__ == "__main__":
         img = img.to(device)
         img = img.unsqueeze(0)
 
-        with torch.no_grad:
+        with torch.no_grad():
             preds = model(img)
 
         _, preds = preds.max(2)
