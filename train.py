@@ -39,7 +39,7 @@ def train_net(args):
         model.apply(weights_init)
         # model = nn.DataParallel(model)
 
-        optimizer = torch.optim.Adam(model.parameters(), lr=1e-5, betas=(0.9, 0.98), eps=1e-09),
+        optimizer = torch.optim.Adam(model.parameters(), lr=1e-5, betas=(0.9, 0.98), eps=1e-09)
         # optimizer = CRNNOptimizer(
         #     torch.optim.Adam(model.parameters(), betas=(0.9, 0.98), eps=1e-09),
         #     args.k,
