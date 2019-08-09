@@ -11,7 +11,6 @@ import data_gen
 import utils
 from config import device, print_freq, num_workers, imgH, num_channels, num_classes, num_hidden, max_target_len
 from models import CRNN
-from optimizer import CRNNOptimizer
 
 
 def train_net(args):
@@ -40,11 +39,12 @@ def train_net(args):
         model.apply(weights_init)
         # model = nn.DataParallel(model)
 
-        optimizer = CRNNOptimizer(
-            torch.optim.Adam(model.parameters(), betas=(0.9, 0.98), eps=1e-09),
-            args.k,
-            num_hidden,
-            args.warmup_steps)
+        optimizer = torch.optim.Adam(model.parameters(), lr=1e-5, betas=(0.9, 0.98), eps=1e-09),
+        # optimizer = CRNNOptimizer(
+        #     torch.optim.Adam(model.parameters(), betas=(0.9, 0.98), eps=1e-09),
+        #     args.k,
+        #     num_hidden,
+        #     args.warmup_steps)
 
     else:
         checkpoint = torch.load(checkpoint)
@@ -149,9 +149,8 @@ def train(train_loader, model, criterion, optimizer, epoch, logger):
         if i % print_freq == 0:
             logger.info('Epoch: [{0}][{1}/{2}]\t'
                         'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
-                        'Accuracy {acc.val:.4f} ({acc.avg:.4f})\t'
-                        'Learning rate {lr:.6f}'.format(epoch, i, len(train_loader), loss=losses,
-                                                        acc=accs, lr=optimizer.lr))
+                        'Accuracy {acc.val:.4f} ({acc.avg:.4f})'.format(epoch, i, len(train_loader), loss=losses,
+                                                                        acc=accs))
 
     return losses.avg, accs.avg
 

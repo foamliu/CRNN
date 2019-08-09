@@ -96,9 +96,9 @@ def parse_args():
     parser.add_argument('--end-epoch', type=int, default=1000, help='training epoch size.')
 
     # optimizer
-    parser.add_argument('--k', default=0.01, type=float,
+    parser.add_argument('--k', default=0.2, type=float,
                         help='tunable scalar multiply to learning rate')
-    parser.add_argument('--warmup_steps', default=50000, type=int,
+    parser.add_argument('--warmup_steps', default=4000, type=int,
                         help='warmup steps')
 
     parser.add_argument('--checkpoint', type=str, default=None, help='checkpoint')
