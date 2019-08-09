@@ -81,7 +81,7 @@ def train_net(args):
         writer.add_scalar('Train_Loss', train_loss, epoch)
         writer.add_scalar('Train_Accuracy', train_acc, epoch)
 
-        print('\nLearning rate: {}\n'.format(optimizer.lr))
+        print('\nLearning rate: {0:.6f}\n'.format(optimizer.lr))
         writer.add_scalar('Learning_Rate', optimizer.lr, epoch)
 
         # One epoch's validation
@@ -149,8 +149,9 @@ def train(train_loader, model, criterion, optimizer, epoch, logger):
         if i % print_freq == 0:
             logger.info('Epoch: [{0}][{1}/{2}]\t'
                         'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
-                        'Accuracy {acc.val:.4f} ({acc.avg:.4f})'.format(epoch, i, len(train_loader), loss=losses,
-                                                                        acc=accs))
+                        'Accuracy {acc.val:.4f} ({acc.avg:.4f})\t'
+                        'Learning rate {lr:.6f}'.format(epoch, i, len(train_loader), loss=losses,
+                                                        acc=accs, lr=optimizer.lr))
 
     return losses.avg, accs.avg
 
@@ -174,8 +175,9 @@ def valid(valid_loader, model, criterion, logger):
         targets = torch.LongTensor(targets).to(device)  # size (batch size, max target length)
 
         # Forward prop.
-        inputs = model(images)  # size (input length, batch size, number of classes)
-        input_lengths = Variable(torch.IntTensor([inputs.size(0)] * batch_size))  # size (batch size)
+        with torch.no_grad():
+            inputs = model(images)  # size (input length, batch size, number of classes)
+            input_lengths = Variable(torch.IntTensor([inputs.size(0)] * batch_size))  # size (batch size)
 
         # Calculate loss
         loss = criterion(inputs, targets, input_lengths, target_lengths)
