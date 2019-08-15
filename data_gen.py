@@ -80,7 +80,8 @@ class MJSynthDataset(Dataset):
         img_path = os.path.join(IMG_FOLDER, img_path)
         img = cv.imread(img_path)
         img = image_aug(img)
-        img = image_resize(img, width=imgW, height=imgH, inter=cv.INTER_CUBIC)
+        img = cv.resize(img, (imgW, imgH), cv.INTER_CUBIC)
+        # img = image_resize(img, width=imgW, height=imgH, inter=cv.INTER_CUBIC)
         img = img[..., ::-1]  # RGB
         img = transforms.ToPILImage()(img)
         img = self.transformer(img)

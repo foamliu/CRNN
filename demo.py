@@ -34,7 +34,8 @@ if __name__ == "__main__":
         im_fn = os.path.join(IMG_FOLDER, im_fn)
         img = cv.imread(im_fn)
         cv.imwrite('images/img_{}.jpg'.format(idx), img)
-        img = image_resize(img, width=imgW, height=imgH, inter=cv.INTER_CUBIC)
+        img = cv.resize(img, (imgW, imgH), cv.INTER_CUBIC)
+        # img = image_resize(img, width=imgW, height=imgH, inter=cv.INTER_CUBIC)
         img = img[..., ::-1]  # RGB
 
         img = transforms.ToPILImage()(img)

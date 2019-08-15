@@ -43,8 +43,8 @@ if __name__ == "__main__":
         file = 'word_{}.png'.format(i + 1)
         im_fn = os.path.join(image_folder, file)
         img = cv.imread(im_fn)
-        # img = cv.resize(img, (imgW, imgH), cv.INTER_CUBIC)
-        img = image_resize(img, width=imgW, height=imgH, inter=cv.INTER_CUBIC)
+        img = cv.resize(img, (imgW, imgH), cv.INTER_CUBIC)
+        # img = image_resize(img, width=imgW, height=imgH, inter=cv.INTER_CUBIC)
         img = img[..., ::-1]  # RGB
 
         img = transforms.ToPILImage()(img)
